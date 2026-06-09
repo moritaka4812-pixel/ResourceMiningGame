@@ -1,7 +1,7 @@
 ﻿
 namespace ResourceMiningGame.Maps.Tiles
 {
-    public enum TileType
+    public enum TileType //タイルのタイプ
     {
         Road,
         Buildable,

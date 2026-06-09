@@ -12,8 +12,8 @@ namespace ResourceMiningGame.Maps
         void LoadContent(ContentManager contentManager);
         void Update(GameTime gameTime);
         void Draw(SpriteBatch sb, VisibleTileRange range);
-        Tiles.Tile GetTile(int x, int y);
+        Tiles.Tile GetTile(int x, int y); //指定されたタイルを返すメソッド
         
-        VisibleTileRange GetVisibleRange(Camera camera, GraphicsDevice graphics);
+        VisibleTileRange GetVisibleRange(Camera camera, GraphicsDevice graphics); //ワールド座標上のカメラ範囲を返す
     }
 }

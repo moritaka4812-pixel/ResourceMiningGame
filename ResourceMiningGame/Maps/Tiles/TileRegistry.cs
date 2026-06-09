@@ -5,11 +5,11 @@ namespace ResourceMiningGame.Maps.Tiles
 {
     public static class TileRegistry
     {
-        public static Dictionary<TileType, TileAnimationInfo> Data = //Dictionary変数を定義
+        public static Dictionary<TileType, TileAnimationInfo> Data = //タイル種類ごとのアニメーション情報を保持するDictionary変数を定義
             new Dictionary<TileType, TileAnimationInfo>()
             {
                 {
-                    TileType.Copper, //各タイルアニメーションデータについて格納
+                    TileType.Copper, //各タイルアニメーションデータなどについて格納
                     new TileAnimationInfo
                     {
                         TexturePath = "TileUI/copper",

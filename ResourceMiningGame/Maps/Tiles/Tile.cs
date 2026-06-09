@@ -8,7 +8,7 @@ namespace ResourceMiningGame.Maps.Tiles
         public TileType Type;
         public float MiningRate; //資源タイルの採掘速度
         public bool IsBuildable; //建設可能かどうか
-        public Vector2 Position; //タイルの位置（グリッド座標）
+        public Vector2 Position; //タイルの位置（ワールド座標）
 
         //アニメーション用
         public Texture2D SpriteSheet; //スプライトシート
@@ -20,9 +20,9 @@ namespace ResourceMiningGame.Maps.Tiles
         private float timer;
         private int currentFrame;
 
-        public Tile(TileType Type,
+        public Tile(TileType Type,　//タイルはType, Positionのみでnew可能
                     Vector2 Position,
-                    int FrameCount = 1,
+                    int FrameCount = 1, //その他の初期設定
                     int FrameWidth = 16,
                     int FrameHeight = 16,
                     float FrameTime = 0.25f)
