@@ -31,14 +31,14 @@ namespace ResourceMiningGame.Maps
         {
             this.contentManager = contentManager;
 
-            for(int y = 0; y < MapSizeY; y++)
+            for(int y = 0; y < MapSizeY; y++) //マップ全タイルのスプライトシートとアニメーション情報をロード
             {
                 for(int x = 0; x < MapSizeX; x++)
                 {
-                    var tile = MapTiles[x, y];
-                    var info = Tiles.TileRegistry.Data[tile.Type];
+                    var tile = MapTiles[x, y]; //オブジェクト参照でタイルを取得
+                    var info = Tiles.TileRegistry.Data[tile.Type]; //タイルの情報を取得
 
-                    tile.SpriteSheet = contentManager.Load<Texture2D>(info.TexturePath);
+                    tile.SpriteSheet = contentManager.Load<Texture2D>(info.TexturePath); //各タイルの種類ごとの情報をロード
                     tile.FrameCount = info.FrameCount;
                     tile.FrameWidth = info.FrameWidth;
                     tile.FrameHeight = info.FrameHeight;
@@ -52,7 +52,7 @@ namespace ResourceMiningGame.Maps
 
         }
 
-        public override void Draw(SpriteBatch sb , VisibleTileRange range)
+        public override void Draw(SpriteBatch sb , VisibleTileRange range) //画面の範囲のみDraw
         {
             for (int y = range.StartY; y < range.EndY; y++)
             {

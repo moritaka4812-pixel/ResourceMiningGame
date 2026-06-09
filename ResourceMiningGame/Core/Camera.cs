@@ -69,10 +69,12 @@ namespace ResourceMiningGame.Core
             }
         }
 
-        public Matrix GetViewMatrix() //描画に必要なMatrixを返す
+        public Matrix GetViewMatrix() //描画に必要なMatrixを返す(ワールド座標から画面上の座標に変換)
         {
+            //カメラの位置に対して、その位置と逆方向に平行移動する。(逆方向の移動はMonoGameのtransformMatrixによるもの)
+            //その後Zoom倍率を適用する。
             return Matrix.CreateTranslation(new Vector3(-Position, 0))　*
-                   Matrix.CreateScale(Zoom); //右に-Position.x、下に-Position.yだけ描画座標を移動させる
+                   Matrix.CreateScale(Zoom); 
         }
     }
 }
