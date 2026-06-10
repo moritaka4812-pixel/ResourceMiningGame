@@ -1,6 +1,7 @@
 ﻿//スクリーン座標＝物理的な画面全体の座標
 //内部座標＝サイズだけ変わる、内部の画面全体の座標
-//描画座標＝スクリーンに表示するための内部座標上に存在する座標。原点はtransformMatrixの影響を受ける
+//描画座標＝SpriteBatch.Begin(transformMatrix)の内部で使われる座標系。
+//          スクリーンに表示するための内部座標上に存在する座標。原点はtransformMatrixの影響を受ける
 
 using MyUI = ResourceMiningGame.UI;
 using Color = Microsoft.Xna.Framework.Color;
@@ -58,7 +59,7 @@ namespace ResourceMiningGame.Screens
 
             foreach( var btn in levelButtons) //各ボタンが押されたかの確認
             {
-                if (btn.UpdateWithOffset(0, - scroll.ScrollY, game.mouseInput))　//内部座標に変換して押されたか(-scroll.ScrollYはScrollViewのtransformMatrixに依存するもの)
+                if (btn.UpdateWithOffset(0, - scroll.ScrollY, game.Input.Mouse))　//内部座標に変換して押されたか(-scroll.ScrollYはScrollViewのtransformMatrixに依存するもの)
                 {
                     // Load level
                     game.ChangeScreen(new GamePlayScreen(game)); //ゲームプレイスクリーンに切り替える

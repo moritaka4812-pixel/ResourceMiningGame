@@ -9,14 +9,14 @@ namespace ResourceMiningGame
         private GraphicsDeviceManager _graphics; //グラフィック設定を管理
         private SpriteBatch _spriteBatch; //テキストとイメージを描画
         private ScreenBase currentScreen; //表示する画面
-        public MouseInput mouseInput; //マウスの状態を管理
+        public InputManager Input { get; private set; } //入力の状態を管理
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this); //グラフィック設オブジェクトを生成（プログラム上で一度のみ生成）
+            _graphics = new GraphicsDeviceManager(this); //グラフィック設定を管理するオブジェクトを生成（ゲーム内で一度のみ生成）
             Content.RootDirectory = "Content"; // コンテントディレクトリのルートを指定
             IsMouseVisible = true; // マウスカーソルを表示
-            mouseInput = new MouseInput();
+            Input = new InputManager();
         }
 
         protected override void Initialize() // ゲームオブジェクトの初期化
@@ -35,9 +35,9 @@ namespace ResourceMiningGame
 
         }
 
-        public void ChangeScreen(ScreenBase next)// 画面変更では共通のGame1インスタンスのメソッドを使う
+        public void ChangeScreen(ScreenBase next)// 画面遷移を行うための共通メソッド(currentScreenを差し替える)
         {
-            mouseInput.Update();
+            Input.Update(); //画面切り替え時に入力を更新して、クリックなどの入力誤検知を防ぐ
             currentScreen = next;
         }
 
@@ -45,7 +45,7 @@ namespace ResourceMiningGame
         // Updateロジックをフレームレートに依存させないために使う。
         protected override void Update(GameTime gameTime) // 内部の情報を更新するために毎フレームごとに呼ばれる
         {
-            mouseInput.Update(); //マウス情報更新
+            Input.Update(); //入力デバイスの情報更新
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
                 Exit();

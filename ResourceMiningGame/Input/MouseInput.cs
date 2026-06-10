@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace ResourceMiningGame.Input
 {
@@ -34,7 +35,17 @@ namespace ResourceMiningGame.Input
         public bool MiddleClicked() //ホイールクリックの入力処理
         {
             return Current.MiddleButton == ButtonState.Pressed &&
-                   Previous.RightButton == ButtonState.Released;
+                   Previous.MiddleButton == ButtonState.Released;
+        }
+
+        public int ScrollDelta() //マウスホイールのスクロール変化量
+        {
+            return Current.ScrollWheelValue - Previous.ScrollWheelValue;
+        }
+
+        public Point PointDelta() //マウス位置の変化量
+        {
+            return Current.Position - Previous.Position;
         }
     }
 }

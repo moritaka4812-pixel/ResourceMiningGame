@@ -23,12 +23,12 @@ namespace ResourceMiningGame.Screens
             spriteBatch.Begin(); // spriteBatchで描画
             startButton.Draw(spriteBatch); // スタートボタンを描画
             spriteBatch.DrawString(font, "My Resource Mining Game", new Vector2(200, 100), Color.AliceBlue); // タイトルテキストを表示
-            spriteBatch.End(); // Batchの設定をフラッシュして終了
+            spriteBatch.End(); // Batchの設定を送信して終了
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (startButton.Update(game.mouseInput)) // スタートボタンが押された
+            if (startButton.Update(game.Input.Mouse)) // スタートボタンが押された
             {
                 game.ChangeScreen(new LevelSelectScreen(game));
             }
