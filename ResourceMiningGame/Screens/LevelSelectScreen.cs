@@ -8,6 +8,7 @@ using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 using ResourceMiningGame.Core;
+using ResourceMiningGame.UI;
 
 namespace ResourceMiningGame.Screens
 {
@@ -21,9 +22,9 @@ namespace ResourceMiningGame.Screens
 
         public LevelSelectScreen(Game1 game) : base(game)
         {
-            font = game.Content.Load<SpriteFont>("Fonts\\MyFont"); //フォントデータ読み込み
             white = new Texture2D(game.GraphicsDevice, 1, 1); //1ドットのテクスチャ作成
             white.SetData(new[] { Color.White }); //白いテクスチャを割り当て
+            var ui = new UIFactory(game); //UI生成インスタンス
 
             scroll = new ScrollView( //スクロール画面を初期化
                 game.GraphicsDevice,
@@ -41,13 +42,7 @@ namespace ResourceMiningGame.Screens
 
             for(int i= 0; i < 10; i++) //ボタンのリストを作成
             {
-                levelButtons.Add(new MyUI.Button(
-                    game.GraphicsDevice,
-                    font,
-                    new Rectangle(120, 120 + i * 100, 500, 80),
-                    $"Level {i + 1}"
-                    ));
-
+                levelButtons.Add(ui.CreateTextButton(120, 120 + i * 100, 500, 80, $"Stage {i + 1}")); //テキストボタンを生成
             }
 
         }
