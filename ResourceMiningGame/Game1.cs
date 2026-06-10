@@ -8,7 +8,7 @@ namespace ResourceMiningGame
     {
         private GraphicsDeviceManager _graphics; //グラフィック設定を管理
         private SpriteBatch _spriteBatch; //テキストとイメージを描画
-        private ScreenBase currentScreen; //表示する画面
+        private Stack<ScreenBase> screens = new Stack<ScreenBase>(); //表示する画面のスタック
         public InputManager Input { get; private set; } //入力の状態を管理
 
         public Game1()
@@ -28,17 +28,29 @@ namespace ResourceMiningGame
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice); // テキスト描画などを行うSpriteBatchを生成
-            currentScreen = new TitleScreen (this); // タイトルスクリーンからスタート
+            screens.Push(new TitleScreen (this)); // タイトルスクリーンからスタート
 
             // TODO: use this.Content to load your game content here
             
 
         }
 
-        public void ChangeScreen(ScreenBase next)// 画面遷移を行うための共通メソッド(currentScreenを差し替える)
+        public void PushScreen(ScreenBase screen) //Stackにスクリーンをプッシュ
+        {
+            screens.Push(screen);
+        }
+
+        public void PopScreen() //Stackからスクリーンをポップ
+        {
+            if (screens.Count > 1)
+                screens.Pop();
+        }
+
+        public void ChangeScreen(ScreenBase screen)// 画面遷移を行うための共通メソッド(currentScreenを差し替える)
         {
             Input.Update(); //画面切り替え時に入力を更新して、クリックなどの入力誤検知を防ぐ
-            currentScreen = next;
+            screens.Clear(); //画面をクリア
+            screens.Push(screen); //次の画面を表示
         }
 
         // GameTime : ゲーム世界の時間情報（前フレームからの経過時間および累計時間）
@@ -51,7 +63,7 @@ namespace ResourceMiningGame
                 Exit();
 
             // TODO: Add your update logic here
-            currentScreen.Update(gameTime);
+            screens.Peek().Update(gameTime); //最も後から追加されたスクリーンをUpdate()
 
             base.Update(gameTime); // ベースクラスのUpdate()を行う
         }
@@ -61,8 +73,12 @@ namespace ResourceMiningGame
             GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
 
             // TODO: Add your drawing code here
-            currentScreen.Draw(_spriteBatch);
+            foreach (var screen in screens.Reverse()) //最も後から追加されたスクリーンから描画
+            {
+                screen.Draw(_spriteBatch);
 
+                if (!screen.IsTransparent) break; //スクリーン透過ができない
+            }
             base.Draw(gameTime); // ベースクラスのDraw()
         }
     }

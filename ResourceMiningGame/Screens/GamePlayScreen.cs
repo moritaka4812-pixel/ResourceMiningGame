@@ -20,9 +20,6 @@ namespace ResourceMiningGame.Screens
         CameraController controller; //カメラの移動を管理する
         IMap map; //マップ情報
         Button settingsButton; //セッティングボタン
-        Button backButton; //バックボタン
-        Button backToTitleButton; //タイトルに戻るボタン
-        bool isSettingsOpen = false; //セッティング状態か
 
         public GamePlayScreen(Game1 game) : base (game) 
         {
@@ -32,7 +29,7 @@ namespace ResourceMiningGame.Screens
             map = new Map1(); 
             this.LoadContent();
         }
-
+        public override bool IsTransparent => true;
         public void LoadContent()
         {
             var ui = new UIFactory(game); //UIを生成するインスタンス
@@ -40,10 +37,6 @@ namespace ResourceMiningGame.Screens
 
             settingsButton = ui.CreateImageButton(760, 20, 32, 32, "UI/gear"); //セッティングボタンを生成
             settingsButton.SetBackgroundColor(Color.White); //背景色を再設定
-
-            backButton = ui.CreateTextButton(350, 350, 350, 100, "Back"); //戻るボタンを生成
-
-            backToTitleButton = ui.CreateTextButton(350, 150, 350, 100, "Back To Title"); //タイトルに戻るボタンを生成
 
             pixel = new Texture2D(game.GraphicsDevice, 1, 1); //Draw用のテクスチャ作成
             pixel.SetData(new[] { Color.White });
@@ -59,20 +52,7 @@ namespace ResourceMiningGame.Screens
             //セッティングボタンが押されたかの処理
             if (settingsButton.Update(game.Input.Mouse))
             {
-                isSettingsOpen = true;
-            }
-            //セッティングメニューの処理
-            if (isSettingsOpen)
-            {
-                if (backButton.Update(game.Input.Mouse))
-                {
-                    isSettingsOpen = false;
-                }
-
-                if (backToTitleButton.Update(game.Input.Mouse))
-                {
-                    game.ChangeScreen(new TitleScreen(game));
-                }
+                game.PushScreen(new GameSettingScreen(game));
             }
 
             //タイル更新(アニメーション)
@@ -133,13 +113,6 @@ namespace ResourceMiningGame.Screens
 
             settingsButton.Draw(sb);
 
-            if (isSettingsOpen)
-            {
-                sb.Draw(pixel, new Rectangle(0, 0, game.GraphicsDevice.Viewport.Width, game.GraphicsDevice.Viewport.Height),
-                    new Color(0, 0, 0, 150));
-                backButton.Draw(sb);
-                backToTitleButton.Draw(sb);
-            }
             sb.End();
         }
     }
