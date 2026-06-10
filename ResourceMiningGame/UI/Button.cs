@@ -1,6 +1,8 @@
 ﻿using Rect = Microsoft.Xna.Framework.Rectangle;
 using Color = Microsoft.Xna.Framework.Color;
 using Input = Microsoft.Xna.Framework.Input;
+using Point = Microsoft.Xna.Framework.Point;
+using MouseInput = ResourceMiningGame.Input.MouseInput;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 
 namespace ResourceMiningGame.UI
@@ -48,51 +50,21 @@ namespace ResourceMiningGame.UI
             whiteTex.SetData(new[] { Color.White });
         }
 
-        public bool Update(MouseState current, MouseState previous)
+        public bool Update(MouseInput mouse)
         {
-            bool hover = Rect.Contains(current.Position); //マウスがRect上にあるか
-
-            if (hover) //Rect上にある
-            {
-                FillColor = HoverFillColor;
-                BorderColor = Color.Yellow;
-            }
-            else //Rect上にない
-            {
-                FillColor = NormalFillColor;
-                BorderColor = Color.White;
-            }
+            bool hover = ColorChangeWithHover(mouse.Current.Position); //マウスがRect上にあるなら色を変える
 
             // クリック瞬間判定（押した瞬間だけtrue）
-            bool clicked = hover &&
-                           current.LeftButton == ButtonState.Pressed &&
-                           previous.LeftButton == ButtonState.Released;
-
-            return clicked;
+            return hover && mouse.LeftClicked();
         }
 
-        public bool UpdateWithOffset(int offsetX, int offsetY, MouseState current, MouseState previous) //画面が移動した時のUpdate処理
+        public bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse) //画面が移動した時のUpdate処理
         {
-            var pos = new Microsoft.Xna.Framework.Point(current.X - offsetX, current.Y - offsetY); //内部の相対座標を計算（ミシンの縫物のイメージ）描画と内部のズレがoffset
-            bool hover = Rect.Contains(pos);
-
-            if (hover)
-            {
-                FillColor = HoverFillColor;
-                BorderColor = Color.Yellow;
-            }
-            else
-            {
-                FillColor = NormalFillColor;
-                BorderColor = Color.White;
-            }
+            var pos = new Point(mouse.Current.Position.X - offsetX, mouse.Current.Position.Y - offsetY); //内部の相対座標を計算（ミシンの縫物のイメージ）描画と内部のズレがoffset
+            bool hover = ColorChangeWithHover(pos);
 
             // クリック瞬間判定（押した瞬間だけtrue）
-            bool clicked = hover &&
-                           current.LeftButton == ButtonState.Pressed &&
-                           previous.LeftButton == ButtonState.Released;
-
-            return clicked;
+            return hover && mouse.LeftClicked();
         }
 
         public void Draw(SpriteBatch sb)
@@ -133,6 +105,23 @@ namespace ResourceMiningGame.UI
         public void SetHoverColor(Color color) //ホバー時の色変更メソッド
         {
             HoverFillColor = color;
+        }
+
+        bool ColorChangeWithHover(Point point)
+        {
+            bool hover = Rect.Contains(point);
+
+            if (hover) //ボタン上にマウスがホバーしているか
+            {
+                FillColor = HoverFillColor;
+                BorderColor = Color.Yellow;
+            }
+            else
+            {
+                FillColor = NormalFillColor;
+                BorderColor = Color.White;
+            }
+            return hover;
         }
 
         void DrawRectangle(SpriteBatch sb, Rect rect, int thickness, Color color)

@@ -6,13 +6,13 @@ namespace ResourceMiningGame.UI
 {
     public class ScrollBar
     {
-        public Rectangle BarRect; // the full area of the scrollbar track
-        public Rectangle HandleRect; // draggable handle area (thumb)
+        public Rectangle BarRect; // スクロールできる範囲全体
+        public Rectangle HandleRect; // 映している範囲を示すスクロールバー
 
-        public void Update(int scrollY, int contentHeight, int viewHeight) // update the scrollbar position every frame.
+        public void Update(int scrollY, int contentHeight, int viewHeight) // スクロールバーの位置を更新
         {
-            float ratio = (float)scrollY / (contentHeight - viewHeight); // calculate the scroll/content ratio (0.0 to 1.0)
-            int handleY = BarRect.Y + (int)(ratio * (BarRect.Height - HandleRect.Height)); // calculate the thumb's Y position within the track. 
+            float ratio = (float)scrollY / (contentHeight - viewHeight); // コンテンツのどの位置にスクロールバーがあるか（0~1.0）
+            int handleY = BarRect.Y + (int)(ratio * (BarRect.Height - HandleRect.Height)); // スクロールバーがコンテンツ全体のどの高さにあるかを計算
 
             HandleRect = new Rectangle(
                 BarRect.X,

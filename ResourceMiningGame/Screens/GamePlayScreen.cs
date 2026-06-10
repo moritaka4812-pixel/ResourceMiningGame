@@ -59,19 +59,19 @@ namespace ResourceMiningGame.Screens
             var mouse = Mouse.GetState(); //ウィンドウ用のマウス位置取得
 
             //セッティングボタンが押されたかの処理
-            if (settingsButton.Update(Mouse.GetState(), game.LastMouseState()))
+            if (settingsButton.Update(game.mouseInput))
             {
                 isSettingsOpen = true;
             }
             //セッティングメニューの処理
             if (isSettingsOpen)
             {
-                if (backButton.Update(Mouse.GetState(), game.LastMouseState()))
+                if (backButton.Update(game.mouseInput))
                 {
                     isSettingsOpen = false;
                 }
 
-                if (backToTitleButton.Update(Mouse.GetState(), game.LastMouseState()))
+                if (backToTitleButton.Update(game.mouseInput))
                 {
                     game.ChangeScreen(new TitleScreen(game));
                 }
@@ -89,7 +89,7 @@ namespace ResourceMiningGame.Screens
             }
 
             //左クリックでタイル選択
-            if (mouse.LeftButton == ButtonState.Pressed)
+            if (game.mouseInput.LeftClicked())
             {
                 Vector2 screenPos = mouse.Position.ToVector2(); //スクリーン座標を取得
 

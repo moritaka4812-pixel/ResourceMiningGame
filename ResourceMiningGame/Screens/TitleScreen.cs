@@ -8,10 +8,10 @@ namespace ResourceMiningGame.Screens
     {
         MyUI.Button startButton;
 
-        public TitleScreen(Game1 game) : base(game) // call base class constructor to pass game instance and base class stores the instance.
+        public TitleScreen(Game1 game) : base(game) // 親のコンストラクタを先に呼んでから実行
         {
-            font = game.Content.Load<SpriteFont>("Fonts\\MyFont"); // load font data
-            startButton = new MyUI.Button( // create a start button from MyUI.Button class
+            font = game.Content.Load<SpriteFont>("Fonts\\MyFont"); // フォントデータをロード
+            startButton = new MyUI.Button( // ボタンを生成
                 game.GraphicsDevice,
                 font,
                 new Rect(300, 400, 200, 80),
@@ -20,15 +20,15 @@ namespace ResourceMiningGame.Screens
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(); // start drawing with batch (=setting)
-            startButton.Draw(spriteBatch); // draw the start button
-            spriteBatch.DrawString(font, "My TD Game", new Vector2(200, 100), Color.AliceBlue); // draw the title text
-            spriteBatch.End(); // flush the batch and finish drawing
+            spriteBatch.Begin(); // spriteBatchで描画
+            startButton.Draw(spriteBatch); // スタートボタンを描画
+            spriteBatch.DrawString(font, "My Resource Mining Game", new Vector2(200, 100), Color.AliceBlue); // タイトルテキストを表示
+            spriteBatch.End(); // Batchの設定をフラッシュして終了
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (startButton.Update(Mouse.GetState(), game.LastMouseState())) // start button was clicked
+            if (startButton.Update(game.mouseInput)) // スタートボタンが押された
             {
                 game.ChangeScreen(new LevelSelectScreen(game));
             }

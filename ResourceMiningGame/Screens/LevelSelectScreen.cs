@@ -58,7 +58,7 @@ namespace ResourceMiningGame.Screens
 
             foreach( var btn in levelButtons) //各ボタンが押されたかの確認
             {
-                if (btn.UpdateWithOffset(0, - scroll.ScrollY, Mouse.GetState(), game.LastMouseState()))　//内部座標に変換して押されたか(-scroll.ScrollYはScrollViewのtransformMatrixに依存するもの)
+                if (btn.UpdateWithOffset(0, - scroll.ScrollY, game.mouseInput))　//内部座標に変換して押されたか(-scroll.ScrollYはScrollViewのtransformMatrixに依存するもの)
                 {
                     // Load level
                     game.ChangeScreen(new GamePlayScreen(game)); //ゲームプレイスクリーンに切り替える

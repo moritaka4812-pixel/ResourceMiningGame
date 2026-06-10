@@ -1,51 +1,51 @@
 ﻿using Microsoft.Xna.Framework;
+using ResourceMiningGame.Input;
 using ResourceMiningGame.Screens;
 
 namespace ResourceMiningGame
 {
-    public class Game1 : Game // inherit from Game class.
+    public class Game1 : Game //ゲームクラスから継承
     {
-        private GraphicsDeviceManager _graphics; //manage graphics settings
-        private SpriteBatch _spriteBatch; //draw text and images
-        private ScreenBase currentScreen; //showing screen
-        private MouseState lastMouseState; //マウスの状態を保持
+        private GraphicsDeviceManager _graphics; //グラフィック設定を管理
+        private SpriteBatch _spriteBatch; //テキストとイメージを描画
+        private ScreenBase currentScreen; //表示する画面
+        public MouseInput mouseInput; //マウスの状態を管理
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this); //create graphics object (this is created only once in project)
-            Content.RootDirectory = "Content"; // set the root directory of the content
-            IsMouseVisible = true; // able to see the mouse cursor
+            _graphics = new GraphicsDeviceManager(this); //グラフィック設オブジェクトを生成（プログラム上で一度のみ生成）
+            Content.RootDirectory = "Content"; // コンテントディレクトリのルートを指定
+            IsMouseVisible = true; // マウスカーソルを表示
+            mouseInput = new MouseInput();
         }
 
-        protected override void Initialize() // called for initialization of the game objects
+        protected override void Initialize() // ゲームオブジェクトの初期化
         {
             // TODO: Add your initialization logic here
-            base.Initialize(); // use base class(親クラス) method to Initialize the game objects.
+            base.Initialize(); // ベースクラス(親クラス)のInitialize()を実行
         }
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice); // create a new SpriteBatch which is used to draw and textures in this project
-            currentScreen = new TitleScreen (this); // start with the TitleScreen.
+            _spriteBatch = new SpriteBatch(GraphicsDevice); // テキスト描画などを行うSpriteBatchを生成
+            currentScreen = new TitleScreen (this); // タイトルスクリーンからスタート
 
             // TODO: use this.Content to load your game content here
             
 
         }
 
-        public void ChangeScreen(ScreenBase next)// change the screen. All of the screen will be changed by this same instance method.
+        public void ChangeScreen(ScreenBase next)// 画面変更では共通のGame1インスタンスのメソッドを使う
         {
+            mouseInput.Update();
             currentScreen = next;
-
-            //マウス状態をリセット
-            lastMouseState = Mouse.GetState();
         }
 
         // GameTime : ゲーム世界の時間情報（前フレームからの経過時間および累計時間）
         // Updateロジックをフレームレートに依存させないために使う。
-        protected override void Update(GameTime gameTime) // called every frame to update the internal state of the game.
+        protected override void Update(GameTime gameTime) // 内部の情報を更新するために毎フレームごとに呼ばれる
         {
-            var mouse = Mouse.GetState();  //マウスの状態を保持
+            mouseInput.Update(); //マウス情報更新
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
                 Exit();
@@ -53,24 +53,17 @@ namespace ResourceMiningGame
             // TODO: Add your update logic here
             currentScreen.Update(gameTime);
 
-            lastMouseState = mouse; //マウス情報の更新
-
-            base.Update(gameTime); // use base class method Update().
+            base.Update(gameTime); // ベースクラスのUpdate()を行う
         }
 
-        protected override void Draw(GameTime gameTime) // called every frame after Update to draw the UI and game objects on the screen.
+        protected override void Draw(GameTime gameTime) // 毎フレームごとにUpdate()のあとに呼ばれる。スクリーンに描画をする
         {
             GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
 
             // TODO: Add your drawing code here
             currentScreen.Draw(_spriteBatch);
 
-            base.Draw(gameTime); // use base class method Draw().
-        }
-
-        public MouseState LastMouseState()
-        {
-            return lastMouseState;
+            base.Draw(gameTime); // ベースクラスのDraw()
         }
     }
 }
