@@ -19,15 +19,17 @@ namespace ResourceMiningGame.Screens
         Camera camera; //画面表示用のカメラ
         CameraController controller; //カメラの移動を管理する
         TileAnimator tileAnimator; //タイルのアニメーションを管理
+        TileSelectionController tileSelectionController; //タイル選択を処理
         IMap map; //マップ情報
         Button settingsButton; //セッティングボタン
 
-        public GamePlayScreen(Game1 game) : base (game) 
+        public GamePlayScreen(Game1 game) : base(game)
         {
-            camera = new Camera(new Vector2(0f,0f)); //カメラの初期位置
+            camera = new Camera(new Vector2(0f, 0f)); //カメラの初期位置
             controller = new CameraController();
             map = new Map1();
             tileAnimator = new TileAnimator(map);
+            tileSelectionController = new TileSelectionController(map);
             this.LoadContent();
         }
         public override bool IsTransparent => true;
@@ -60,29 +62,14 @@ namespace ResourceMiningGame.Screens
             tileAnimator.UpdateVisibleTiles(gameTime, camera, game.GraphicsDevice);
 
             //左クリックでタイル選択
-            if (game.Input.Mouse.LeftClicked())
-            {
-                Vector2 screenPos = game.Input.Mouse.Current.Position.ToVector2(); //スクリーン座標を取得
+            selectedTile = tileSelectionController.SelectTile(game.Input.Mouse, camera);
 
-                Matrix inverse = Matrix.Invert(camera.GetViewMatrix()); //カメラ行列の逆行列を取得
-                Vector2 worldPos = Vector2.Transform(screenPos, inverse);　//逆行列でスクリーン座標をワールド座標に変換
-
-                //タイル座標に変換
-                int tileX = (int)(worldPos.X / 16);
-                int tileY = (int)(worldPos.Y / 16);
-
-                //範囲チェック
-                if(tileX >= 0 && tileX < map.MapSizeX && tileY >= 0 && tileY < map.MapSizeY)
-                {
-                    selectedTile = map.GetTile(tileX, tileY);
-                }
-            }
         }
 
         public override void Draw(SpriteBatch sb)
         {
             //ワールド座標での描画
-            sb.Begin(transformMatrix : camera.GetViewMatrix()); //描画座標を指定してDrawをワールド座標基準で描画できるようにする
+            sb.Begin(transformMatrix: camera.GetViewMatrix()); //描画座標を指定してDrawをワールド座標基準で描画できるようにする
 
             var range = map.GetVisibleRange(camera, game.GraphicsDevice); //描画範囲内のレンジを取得
             map.Draw(sb, range); //範囲内のマップをDraw
