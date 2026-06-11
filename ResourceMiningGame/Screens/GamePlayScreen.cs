@@ -18,6 +18,7 @@ namespace ResourceMiningGame.Screens
         public Tile selectedTile = null; //選択したタイルを格納
         Camera camera; //画面表示用のカメラ
         CameraController controller; //カメラの移動を管理する
+        TileAnimator tileAnimator; //タイルのアニメーションを管理
         IMap map; //マップ情報
         Button settingsButton; //セッティングボタン
 
@@ -25,8 +26,8 @@ namespace ResourceMiningGame.Screens
         {
             camera = new Camera(new Vector2(0f,0f)); //カメラの初期位置
             controller = new CameraController();
-
-            map = new Map1(); 
+            map = new Map1();
+            tileAnimator = new TileAnimator(map);
             this.LoadContent();
         }
         public override bool IsTransparent => true;
@@ -56,15 +57,7 @@ namespace ResourceMiningGame.Screens
             }
 
             //タイル更新(アニメーション)
-            var range = map.GetVisibleRange(camera, game.GraphicsDevice); //画面内のタイルの範囲を取得
-
-            for (int y = range.StartY; y < range.EndY; y++) //画面内のタイルのみ
-            {
-                for (int x = range.StartX; x < range.EndX; x++)
-                {
-                    map.MapTiles[x, y].Update(gameTime); //画面内のタイルのアニメーションを行う
-                }
-            }
+            tileAnimator.UpdateVisibleTiles(gameTime, camera, game.GraphicsDevice);
 
             //左クリックでタイル選択
             if (game.Input.Mouse.LeftClicked())
