@@ -14,16 +14,16 @@ namespace ResourceMiningGame.UI
             defaultFont = game.Content.Load<SpriteFont>("Fonts/MyFont");
         }
 
-        public void ChangeFont(string dir)
+        public void ChangeFont(string file)
         {
-            defaultFont = game.Content.Load<SpriteFont>(dir);
+            defaultFont = game.Content.Load<SpriteFont>(file);
         }
 
-        public Button CreateImageButton(int x, int y, int width, int height, string dir)
+        public Button CreateImageButton(int x, int y, int width, int height, string file)
         {
             return new Button(
                 game.GraphicsDevice,
-                game.Content.Load<Texture2D>(dir),
+                game.Content.Load<Texture2D>(file),
                 new rect(x, y, width, height));
         }
 
