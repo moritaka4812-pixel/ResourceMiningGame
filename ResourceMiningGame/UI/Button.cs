@@ -28,8 +28,6 @@ namespace ResourceMiningGame.UI
             this.BorderColor = Color.White;
             this.NormalFillColor = Color.DarkSlateGray;
             this.HoverFillColor = Color.Gray;
-            whiteTex = new Texture2D(device, 1, 1);
-            whiteTex.SetData(new[] { Color.White });
         }
 
         public Button(GraphicsDevice device, Texture2D icon, Rect rect) //イメージ付きボタン
@@ -41,7 +39,6 @@ namespace ResourceMiningGame.UI
             this.NormalFillColor = Color.DarkSlateGray;
             this.HoverFillColor= Color.Gray;
             IsImageButton = true;
-            Anchor = UIAnchor.TopLeft;
         }
 
         public override bool Update(MouseInput mouse)

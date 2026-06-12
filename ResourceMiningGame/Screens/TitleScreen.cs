@@ -13,7 +13,10 @@ namespace ResourceMiningGame.Screens
         {
             var ui = new UIFactory(game);
             startButton = ui.CreateTextButton(300, 400, 200, 80, "Start"); // ボタンを生成
-            startButton.Anchor = UIAnchor.Center;
+            startButton.RelativeX = 0.5f;
+            startButton.RelativeY = 0.8f;
+            startButton.RelativeWidth = 0.4f;
+            startButton.RelativeHeight = 0.2f;
             uiSet.Add(startButton);
             base.LoadContent();
         }
