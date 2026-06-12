@@ -34,7 +34,7 @@ namespace ResourceMiningGame.Screens
 
             for(int i= 0; i < 10; i++) //ボタンのリストを作成
             {
-                levelButtons.Add(ui.CreateTextButton(120, 120 + i * 100, 500, 80, $"Stage {i + 1}")); //テキストボタンを生成
+                levelButtons.Add(ui.CreateTextButton($"Stage {i + 1}", 120, 120 + i * 100, 500, 80)); //テキストボタンを生成
             }
 
         }

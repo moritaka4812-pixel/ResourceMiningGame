@@ -37,7 +37,7 @@ namespace ResourceMiningGame.Screens
             var ui = new UIFactory(game); //UIを生成するインスタンス
             map.LoadContent(game.Content); //マップをロード
 
-            settingsButton = ui.CreateImageButton(760, 20, 32, 32, "UI/gear"); //セッティングボタンを生成
+            settingsButton = ui.CreateImageButton("UI/gear", 760, 20, 32, 32); //セッティングボタンを生成
             settingsButton.SetBackgroundColor(Color.White); //背景色を再設定
             settingsButton.Anchor = UIAnchor.TopRight; //アンカーを指定
             settingsButton.PaddingX = 10;
