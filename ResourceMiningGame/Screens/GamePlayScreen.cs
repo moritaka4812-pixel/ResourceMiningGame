@@ -54,8 +54,13 @@ namespace ResourceMiningGame.Screens
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds; //フレーム間の変化量
 
             controller.Update(game.Input); //入力からカメラの意図[移動・ズーム・ドラッグ]の状態を更新
-            controller.ApplyToCamera(camera, dt); //更新された操作意図をCameraに適用して動かす
-
+            //更新された操作意図をCameraに適用して動かす
+            if (controller.ZoomDelta != 0)
+                camera.ZoomAt(controller.ZoomDelta, game.Input.Mouse.Current.Position.ToVector2());
+            if (controller.MoveDirection != Vector2.Zero)
+                camera.Move(controller.MoveDirection * 500f * dt / camera.Zoom);
+            if (controller.DragDelta != Vector2.Zero)
+                camera.Drag(controller.DragDelta);
 
             //セッティングボタンが押されたかの処理
             if (settingsButton.Update(game.Input.Mouse))

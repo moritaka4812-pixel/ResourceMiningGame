@@ -24,6 +24,18 @@ namespace ResourceMiningGame.Core
             Zoom = Math.Clamp(Zoom + amount, Zoom_min, Zoom_max);
         }
 
+        public void ZoomAt(float zoomDelta, Vector2 mouseScreenPos)
+        {
+            Vector2 before = ScreenToWorld(mouseScreenPos);
+
+            Zoom += zoomDelta;
+            Zoom = Math.Clamp(Zoom, Zoom_min, Zoom_max);
+
+            Vector2 after = ScreenToWorld(mouseScreenPos);
+
+            Position += before - after;
+        }
+
         public void Move(Vector2 delta) //ワールド座標上での移動
         {
             Position += delta;
@@ -40,6 +52,12 @@ namespace ResourceMiningGame.Core
             //その後Zoom倍率を適用する。
             return Matrix.CreateTranslation(new Vector3(-Position, 0))　*
                    Matrix.CreateScale(Zoom); 
+        }
+
+        public Vector2 ScreenToWorld(Vector2 screenPos) //逆行列を使って画面座標をワールド座標へ
+        {
+            Matrix inverse = Matrix.Invert(GetViewMatrix());
+            return Vector2.Transform(screenPos, inverse);
         }
     }
 }
