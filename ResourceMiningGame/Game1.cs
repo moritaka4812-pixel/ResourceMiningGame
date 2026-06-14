@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using ResourceMiningGame.Input;
 using ResourceMiningGame.Screens;
-using ResourceMiningGame.UI;
+using ResourceMiningGame.UI.Core;
 using Rect = Microsoft.Xna.Framework.Rectangle;
 
 namespace ResourceMiningGame

@@ -1,14 +1,15 @@
 ﻿using Rect = Microsoft.Xna.Framework.Rectangle;
 using MyUI = ResourceMiningGame.UI;
 using Color = Microsoft.Xna.Framework.Color;
-using ResourceMiningGame.UI;
+using ResourceMiningGame.UI.Elements;
+using ResourceMiningGame.UI.Core;
 
 namespace ResourceMiningGame.Screens
 {
     public class TitleScreen : ScreenBase
     {
-        MyUI.Button startButton;
-        MyUI.TextLabel titleLabel;
+        MyUI.Elements.Button startButton;
+        TextLabel titleLabel;
 
         public TitleScreen(Game1 game) : base(game) // 親のコンストラクタを先に呼んでから実行
         {

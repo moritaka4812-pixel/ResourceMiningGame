@@ -1,5 +1,4 @@
-﻿
-using ResourceMiningGame.UI;
+﻿using ResourceMiningGame.UI.Setup;
 
 namespace ResourceMiningGame.Screens
 {

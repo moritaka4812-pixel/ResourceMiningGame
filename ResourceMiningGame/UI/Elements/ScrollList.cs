@@ -1,9 +1,10 @@
 ﻿
 using Microsoft.VisualBasic.Devices;
 using ResourceMiningGame.Input;
+using ResourceMiningGame.UI.Core;
 using System.Xml.Serialization;
 
-namespace ResourceMiningGame.UI
+namespace ResourceMiningGame.UI.Elements
 {
     public class ScrollList : UIContainer
     {

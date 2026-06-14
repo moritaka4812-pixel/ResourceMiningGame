@@ -1,8 +1,9 @@
 ﻿using ResourceMiningGame.Input;
+using ResourceMiningGame.UI.Core;
 using Color = Microsoft.Xna.Framework.Color;
 using Rect = Microsoft.Xna.Framework.Rectangle;
 
-namespace ResourceMiningGame.UI
+namespace ResourceMiningGame.UI.Elements
 {
     public class TextLabel : UIElement
     {

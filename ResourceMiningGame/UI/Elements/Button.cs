@@ -2,8 +2,9 @@
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using MouseInput = ResourceMiningGame.Input.MouseInput;
+using ResourceMiningGame.UI.Core;
 
-namespace ResourceMiningGame.UI
+namespace ResourceMiningGame.UI.Elements
 {
     public class Button : UIElement
     {

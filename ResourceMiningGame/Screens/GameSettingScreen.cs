@@ -1,6 +1,6 @@
 ﻿using ResourceMiningGame.Screens;
-using ResourceMiningGame.UI;
-using Button = ResourceMiningGame.UI.Button;
+using ResourceMiningGame.UI.Core;
+using Button = ResourceMiningGame.UI.Elements.Button;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 

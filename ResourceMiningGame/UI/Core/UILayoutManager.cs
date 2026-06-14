@@ -1,5 +1,4 @@
-﻿
-namespace ResourceMiningGame.UI
+﻿namespace ResourceMiningGame.UI.Core
 {
     public class UILayoutManager
     {

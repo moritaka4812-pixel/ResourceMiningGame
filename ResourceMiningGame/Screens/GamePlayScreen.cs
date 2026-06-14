@@ -2,11 +2,12 @@
 using ResourceMiningGame.Core;
 using ResourceMiningGame.Maps;
 using ResourceMiningGame.Maps.Tiles;
-using ResourceMiningGame.UI;
+using ResourceMiningGame.UI.Setup;
 using ResourceMiningGame.Controller;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using Button = ResourceMiningGame.UI.Button;
+using Button = ResourceMiningGame.UI.Elements.Button;
+using ResourceMiningGame.UI.Core;
 
 namespace ResourceMiningGame.Screens
 {

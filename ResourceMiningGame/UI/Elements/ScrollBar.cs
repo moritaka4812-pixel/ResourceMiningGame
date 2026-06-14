@@ -2,8 +2,9 @@
 using Color = Microsoft.Xna.Framework.Color;
 using Microsoft.Xna.Framework.Graphics;
 using ResourceMiningGame.Input;
+using ResourceMiningGame.UI.Core;
 
-namespace ResourceMiningGame.UI
+namespace ResourceMiningGame.UI.Elements
 {
     public class ScrollBar : UIElement
     {

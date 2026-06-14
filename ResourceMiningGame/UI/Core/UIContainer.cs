@@ -1,8 +1,7 @@
-﻿
-using ResourceMiningGame.Input;
+﻿using ResourceMiningGame.Input;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace ResourceMiningGame.UI
+namespace ResourceMiningGame.UI.Core
 {
     public class UIContainer : UIElement
     {

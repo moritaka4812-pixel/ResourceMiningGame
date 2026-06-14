@@ -1,5 +1,6 @@
-﻿
-namespace ResourceMiningGame.UI
+﻿using ResourceMiningGame.UI.Core;
+
+namespace ResourceMiningGame.UI.Setup
 {
     public class SetUIElements //UIをウィンドウサイズで再配置するクラス
     {

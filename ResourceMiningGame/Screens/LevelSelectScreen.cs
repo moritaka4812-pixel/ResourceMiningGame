@@ -5,17 +5,18 @@
 
 using MyUI = ResourceMiningGame.UI;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-
+using ScrollBar = ResourceMiningGame.UI.Elements.ScrollBar;
+using ResourceMiningGame.UI.Core;
 using ResourceMiningGame.Core;
-using ResourceMiningGame.UI;
 using ResourceMiningGame.Maps;
+using ResourceMiningGame.UI.Elements;
 
 namespace ResourceMiningGame.Screens
 {
     public class LevelSelectScreen : ScreenBase
     {
-        MyUI.ScrollBar bar; //スクロールバーUI
-        MyUI.ScrollList listUI; //スクロール表示するUIリスト
+        MyUI.Elements.ScrollBar bar; //スクロールバーUI
+        ScrollList listUI; //スクロール表示するUIリスト
         
 
         public LevelSelectScreen(Game1 game) : base(game)
@@ -24,7 +25,7 @@ namespace ResourceMiningGame.Screens
             listUI = new ScrollList(20) { 
                 RelativeX = 0.1f, RelativeY = 0.05f, RelativeWidth = 0.9f, RelativeHeight = 0.95f}; //スクロール表示のUIインスタンス
 
-            bar = new MyUI.ScrollBar(50, 50, 20, 800) { RelativeX = 0.02f, RelativeY = 0.05f, RelativeWidth = 0.03f, RelativeHeight = 0.95f}; //スクロールバーUIを初期化
+            bar = new ScrollBar(50, 50, 20, 800) { RelativeX = 0.02f, RelativeY = 0.05f, RelativeWidth = 0.03f, RelativeHeight = 0.95f}; //スクロールバーUIを初期化
 
             listUI.SetScrollBar(bar); //対応するスクロールバーを指定
 

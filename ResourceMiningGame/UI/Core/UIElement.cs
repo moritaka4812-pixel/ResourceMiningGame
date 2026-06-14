@@ -2,7 +2,7 @@
 using Rect = Microsoft.Xna.Framework.Rectangle;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace ResourceMiningGame.UI
+namespace ResourceMiningGame.UI.Core
 {
     public abstract class UIElement
     {
