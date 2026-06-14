@@ -21,9 +21,10 @@ namespace ResourceMiningGame.Screens
         public LevelSelectScreen(Game1 game) : base(game)
         {
             var ui = new UIFactory(game); //UI生成インスタンス
-            listUI = new ScrollList(20) { X = 100, Y = 50, Width = 500, Height = 400}; //スクロール表示のUIインスタンス
+            listUI = new ScrollList(20) { 
+                RelativeX = 0.1f, RelativeY = 0.05f, RelativeWidth = 0.9f, RelativeHeight = 0.95f}; //スクロール表示のUIインスタンス
 
-            bar = new MyUI.ScrollBar(50, 50, 20, 800); //スクロールバーUIを初期化
+            bar = new MyUI.ScrollBar(50, 50, 20, 800) { RelativeX = 0.02f, RelativeY = 0.05f, RelativeWidth = 0.03f, RelativeHeight = 0.95f}; //スクロールバーUIを初期化
 
             listUI.SetScrollBar(bar); //対応するスクロールバーを指定
 
@@ -37,6 +38,7 @@ namespace ResourceMiningGame.Screens
                 });
                 
             }
+
         }
 
         public override void Update(GameTime gameTime)

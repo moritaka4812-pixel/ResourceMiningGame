@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.VisualBasic.Devices;
 using ResourceMiningGame.Input;
+using System.Xml.Serialization;
 
 namespace ResourceMiningGame.UI
 {
@@ -9,6 +10,9 @@ namespace ResourceMiningGame.UI
         public ScrollBar? ScrollBar { get; set; } //対応するスクロールバー
         public List<Action>? Callbacks { get; set; } //各要素が押されたときの処理のまとまり
         public int ItemSpacing { get; set; }
+        public int LeftMargin { get; set; }
+        public int RightMargin { get; set; }
+
 
         private int contentHeight; //表示できるコンテンツ全体の高さ
         private int scrollOffset; //どの高さまでスクロールしたか
@@ -16,11 +20,13 @@ namespace ResourceMiningGame.UI
         private RasterizerState scissorRaster;
         private RasterizerState defaultRaster;
 
-        public ScrollList(int Spacing) : base()
+        public ScrollList(int Spacing, int leftMargin = 20, int rightMargin = 20) : base()
         {
             scissorRaster = new RasterizerState() { ScissorTestEnable = true };
-            defaultRaster = new RasterizerState() { ScissorTestEnable = false};
+            defaultRaster = new RasterizerState() { ScissorTestEnable = false };
             this.ItemSpacing = Spacing;
+            LeftMargin = leftMargin;
+            RightMargin = rightMargin;
         }
 
         public void SetScrollBar(ScrollBar scroll)
@@ -31,6 +37,7 @@ namespace ResourceMiningGame.UI
         public void Add(UIElement child, Action callback)
         {
             child.Parent = this;
+
             Children.Add(child);
 
             if (Callbacks == null) Callbacks = new List<Action>();
@@ -42,6 +49,13 @@ namespace ResourceMiningGame.UI
             if (!Visible) return false;
             //スクロールリスト内の座標に補正
             var localMouse = new MouseInput();
+
+            //System.Diagnostics.Debug.WriteLine($"[Before] rect = {rect.X}, {rect.Y}, {rect.Width}, {rect.Height}");
+
+            this.RecalculateLayout();
+            ScrollBar?.RecalculateLayout();
+
+            //System.Diagnostics.Debug.WriteLine($"[After] rect = {rect.X}, {rect.Y}, {rect.Width}, {rect.Height}");
 
             LayoutChildrenVertically(); //縦方向の配置
             UpdateContentHeight(); //スクロールバーのContentHeightを更新
@@ -55,6 +69,7 @@ namespace ResourceMiningGame.UI
 
         public override void Draw(SpriteBatch sb)
         {
+            this.RecalculateLayout();
             BeginClip(sb); //クリップ描画開始
             
             foreach(var child in Children)
@@ -73,13 +88,16 @@ namespace ResourceMiningGame.UI
 
         private void LayoutChildrenVertically()
         {
-            int x = 0; //ScrollListのローカル座標
+            int x = LeftMargin;
             int y = 0;
 
             foreach(var child in Children) //各要素のY座標をループで積み上げるようなイメージ
             {
                 child.X = x;
                 child.Y = y;
+
+                child.Width = rect.Width - (LeftMargin + RightMargin);
+
                 y += child.Height + ItemSpacing;
             }
 
@@ -148,7 +166,14 @@ namespace ResourceMiningGame.UI
                 Matrix.Identity
                 );
 
-            sb.GraphicsDevice.ScissorRectangle = rect; //描画範囲をUIElementの大きさに指定
+            var absoluteRect = rect;
+            if(Parent != null)
+            {
+                absoluteRect.X += Parent.Rect.X;
+                absoluteRect.Y += Parent.Rect.Y;
+            }
+            else absoluteRect = 
+            sb.GraphicsDevice.ScissorRectangle = absoluteRect;
         }
 
         private void EndClip(SpriteBatch sb)

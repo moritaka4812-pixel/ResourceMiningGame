@@ -68,9 +68,9 @@ namespace ResourceMiningGame.UI
             pos.Y += parent.Y;
             //RelativeX / RelativeYがあれば上書き
             if (RelativeX.HasValue)
-                pos.X = parent.X + (int)(parent.Width * RelativeX.Value) - newWidth / 2;
+                pos.X = parent.X + (int)(parent.Width * RelativeX.Value);
             if (RelativeY.HasValue)
-                pos.Y = parent.Y + (int)(parent.Height * RelativeY.Value) - newHeight / 2;
+                pos.Y = parent.Y + (int)(parent.Height * RelativeY.Value);
 
             rect = new Rect((int)pos.X, (int)pos.Y, newWidth, newHeight);
         }
