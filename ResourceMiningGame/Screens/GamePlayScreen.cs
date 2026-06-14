@@ -67,7 +67,12 @@ namespace ResourceMiningGame.Screens
             tileAnimator.UpdateVisibleTiles(gameTime, camera, game.GraphicsDevice);
 
             //左クリックでタイル選択
-            selectedTile = tileSelectionController.SelectTile(game.Input.Mouse, camera);
+            var result = tileSelectionController.SelectTile(game.Input.Mouse, camera);
+
+            if (result.Type == TileSelectionResultType.Selected)
+                selectedTile = result.Tile;
+            else if (result.Type == TileSelectionResultType.Outside)
+                selectedTile = null;
 
         }
 
