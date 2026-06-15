@@ -36,23 +36,31 @@ namespace ResourceMiningGame.UI.Elements
             this.BackgroundColor = color;
         }
 
+        public override bool OnWheel(MouseInput mouse, int delta)
+        {
+            if (HitTest(mouse.Current.Position) && !container.HitTest(mouse.Current.Position)) 
+                return true;
+
+            return false;
+        }
+
         public override bool Update(MouseInput mouse)
         {
             if (!Visible) return false;
 
-            bool clicked = false;
+            bool consumed = base.Update(mouse);
 
-            //背景クリックを拾う
-            if (HitTest(mouse.Current.Position) && mouse.LeftClicked())
-                clicked = true;
+            //ホイールやクリックをPanelの背景で吸収したなら子要素に渡さない
+            if (consumed) return true;
 
             //Panel自身のレイアウト更新
             this.RecalculateLayout();
 
             container.RecalculateLayout();
-            clicked |= container.Update(mouse);
+            //子要素の更新
+            consumed |= container.Update(mouse);
 
-            return clicked;
+            return consumed;
         }
 
         public override void Draw(SpriteBatch sb)

@@ -36,6 +36,8 @@ namespace ResourceMiningGame.UI.Core
         //アンカープロパティ
         public UIAnchor Anchor { get; set; } = UIAnchor.TopLeft;
         protected static Texture2D whiteTex; //全UI共通で利用
+
+        public virtual bool OnWheel(MouseInput mouse, int delta) { return false;  }
         public static void Initialize(GraphicsDevice device)
         {
             whiteTex = new Texture2D(device, 1, 1); //白テクスチャをセット
@@ -86,12 +88,23 @@ namespace ResourceMiningGame.UI.Core
         public virtual bool Update(MouseInput mouse)
         {
             if(!Visible) return false;
-            bool clicked = false;
+            bool consume = false;
 
+            //クリック
             if (HitTest(mouse.Current.Position) && mouse.LeftClicked())
-                clicked = true;
+                consume = true;
 
-            return clicked;
+            //ホイール
+            int wheel = mouse.ScrollDelta();
+            if(wheel != 0 && HitTest(mouse.Current.Position))
+            {
+                bool wheelConsumed = OnWheel(mouse, wheel);
+
+                if (wheelConsumed)
+                    return true;
+            }
+
+            return consume;
         }
 
         public virtual bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse)

@@ -60,21 +60,26 @@ namespace ResourceMiningGame.Screens
         {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds; //フレーム間の変化量
 
-            controller.Update(game.Input); //入力からカメラの意図[移動・ズーム・ドラッグ]の状態を更新
-            //更新された操作意図をCameraに適用して動かす
-            if (controller.ZoomDelta != 0)
-                camera.ZoomAt(controller.ZoomDelta, game.Input.Mouse.Current.Position.ToVector2());
-            if (controller.MoveDirection != Vector2.Zero)
-                camera.Move(controller.MoveDirection * 500f * dt / camera.Zoom);
-            if (controller.DragDelta != Vector2.Zero)
-                camera.Drag(controller.DragDelta);
-
             //UIのクリック処理
-            bool uiClicked = false;
-            uiClicked |= toolPanel.Update(game.Input.Mouse);
-            uiClicked |= settingsButton.Update(game.Input.Mouse);
+            bool uiConsumed = false;
+            uiConsumed |= toolPanel.Update(game.Input.Mouse);
+            uiConsumed |= settingsButton.Update(game.Input.Mouse);
 
-            if (!uiClicked)
+            //UIがホイールの入力を吸収していないときだけカメラ操作
+            if (!uiConsumed)
+            {
+                controller.Update(game.Input); //入力からカメラの意図[移動・ズーム・ドラッグ]の状態を更新
+                //更新された操作意図をCameraに適用して動かす
+                if (controller.ZoomDelta != 0)
+                    camera.ZoomAt(controller.ZoomDelta, game.Input.Mouse.Current.Position.ToVector2());
+                if (controller.MoveDirection != Vector2.Zero)
+                    camera.Move(controller.MoveDirection * 500f * dt / camera.Zoom);
+                if (controller.DragDelta != Vector2.Zero)
+                    camera.Drag(controller.DragDelta);
+            }
+
+            //UIが入力を吸収していないときだけタイル操作
+            if (!uiConsumed)
             {
                 //左クリックでタイル選択
                 var result = tileSelectionController.SelectTile(game.Input.Mouse, camera);
