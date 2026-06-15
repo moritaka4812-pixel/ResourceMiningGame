@@ -38,6 +38,14 @@
                 );
         }
 
+        public static Vector2 AnchorLeftCenter(int screenW, int screenH, int uiW, int uiH, int paddingX, int paddingY)
+        {
+            return new Vector2(
+                paddingX,
+                screenH / 2 - uiH / 2 + paddingY
+                );
+        }
+
         public static Vector2 GetPositionForAnchor( //各アンカーに合わせて配置位置を返す
             UIAnchor anchor,
             int screenW, int screenH,
@@ -61,6 +69,8 @@
                 case UIAnchor.Center:
                     return AnchorCenter(screenW, screenH, uiW, uiH, paddingX, paddingY);
 
+                case UIAnchor.LeftCenter:
+                    return AnchorLeftCenter(screenW, screenH, uiW, uiH, paddingX, paddingY);
                 default:
                     return Vector2.Zero;
             }

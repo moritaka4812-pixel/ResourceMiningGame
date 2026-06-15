@@ -8,6 +8,7 @@ using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Button = ResourceMiningGame.UI.Elements.Button;
 using ResourceMiningGame.UI.Core;
+using ResourceMiningGame.GameUI;
 
 namespace ResourceMiningGame.Screens
 {
@@ -21,6 +22,7 @@ namespace ResourceMiningGame.Screens
         TileSelectionController tileSelectionController; //タイル選択を処理
         IMap map; //マップ情報
         Button settingsButton; //セッティングボタン
+        ToolPanel toolPanel; //左に表示されるツールパネル
 
         public GamePlayScreen(Game1 game) : base(game)
         {
@@ -43,6 +45,10 @@ namespace ResourceMiningGame.Screens
             settingsButton.Anchor = UIAnchor.TopRight; //アンカーを指定
             settingsButton.PaddingX = 10;
             settingsButton.PaddingY = 10;
+            settingsButton.OnClicked += () => game.PushScreen(new GameSettingScreen(game));
+
+            toolPanel = new ToolPanel(ui);
+
             uiSet.Add(settingsButton);
 
             pixel = new Texture2D(game.GraphicsDevice, 1, 1); //Draw用のテクスチャ作成
@@ -63,23 +69,24 @@ namespace ResourceMiningGame.Screens
             if (controller.DragDelta != Vector2.Zero)
                 camera.Drag(controller.DragDelta);
 
-            //セッティングボタンが押されたかの処理
-            if (settingsButton.Update(game.Input.Mouse))
+            //UIのクリック処理
+            bool uiClicked = false;
+            uiClicked |= toolPanel.Update(game.Input.Mouse);
+            uiClicked |= settingsButton.Update(game.Input.Mouse);
+
+            if (!uiClicked)
             {
-                game.PushScreen(new GameSettingScreen(game));
+                //左クリックでタイル選択
+                var result = tileSelectionController.SelectTile(game.Input.Mouse, camera);
+
+                if (result.Type == TileSelectionResultType.Selected)
+                    selectedTile = result.Tile;
+                else if (result.Type == TileSelectionResultType.Outside)
+                    selectedTile = null;
             }
 
             //タイル更新(アニメーション)
             tileAnimator.UpdateVisibleTiles(gameTime, camera, game.GraphicsDevice);
-
-            //左クリックでタイル選択
-            var result = tileSelectionController.SelectTile(game.Input.Mouse, camera);
-
-            if (result.Type == TileSelectionResultType.Selected)
-                selectedTile = result.Tile;
-            else if (result.Type == TileSelectionResultType.Outside)
-                selectedTile = null;
-
         }
 
         public override void Draw(SpriteBatch sb)
@@ -106,6 +113,8 @@ namespace ResourceMiningGame.Screens
 
             //UIの描画（スクリーン座標）
             sb.Begin();
+
+            toolPanel.Draw(sb);
 
             settingsButton.Draw(sb);
 

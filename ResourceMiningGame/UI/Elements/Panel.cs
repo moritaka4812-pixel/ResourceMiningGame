@@ -40,14 +40,19 @@ namespace ResourceMiningGame.UI.Elements
         {
             if (!Visible) return false;
 
+            bool clicked = false;
+
+            //背景クリックを拾う
+            if (HitTest(mouse.Current.Position) && mouse.LeftClicked())
+                clicked = true;
+
             //Panel自身のレイアウト更新
             this.RecalculateLayout();
 
-            //子要素のレイアウト更新とUpdate()
             container.RecalculateLayout();
-            container.Update(mouse);
+            clicked |= container.Update(mouse);
 
-            return false;
+            return clicked;
         }
 
         public override void Draw(SpriteBatch sb)

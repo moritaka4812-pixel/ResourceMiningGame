@@ -1,6 +1,7 @@
 ﻿using ResourceMiningGame.Input;
 using Rect = Microsoft.Xna.Framework.Rectangle;
 using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace ResourceMiningGame.UI.Core
 {
@@ -10,6 +11,9 @@ namespace ResourceMiningGame.UI.Core
         //全UIが共有する画面サイズの四角
         public static Rect RootRect;
         public Rect Rect => rect;
+        //レイアウトを無視するか
+        public bool IgnoreLayoutX { get; set; } = false;
+        public bool IgnoreLayoutY { get; set; } = false;
         //表示するかしないか
         public bool Visible { get; set; } = true;
         //UIContainerで親があれば
@@ -71,16 +75,34 @@ namespace ResourceMiningGame.UI.Core
                 pos.X = parent.X + (int)(parent.Width * RelativeX.Value);
             if (RelativeY.HasValue)
                 pos.Y = parent.Y + (int)(parent.Height * RelativeY.Value);
+            //それぞれのX,Yレイアウトを無視するなら元のX,Yを代入
+            int finalX = IgnoreLayoutX ? rect.X : (int)pos.X;
+            int finalY = IgnoreLayoutY ? rect.Y : (int)pos.Y;
 
-            rect = new Rect((int)pos.X, (int)pos.Y, newWidth, newHeight);
+            rect = new Rect(finalX, finalY, newWidth, newHeight);
         }
 
         public abstract void Draw(SpriteBatch sb);
-        public abstract bool Update(MouseInput mouse);
+        public virtual bool Update(MouseInput mouse)
+        {
+            if(!Visible) return false;
+            bool clicked = false;
+
+            if (HitTest(mouse.Current.Position) && mouse.LeftClicked())
+                clicked = true;
+
+            return clicked;
+        }
+
         public virtual bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse)
         {
             //デフォルトは通常のUpdate
             return Update(mouse);
+        }
+
+        public bool HitTest(Point p)
+        {
+            return Rect.Contains(p);
         }
     }
 }

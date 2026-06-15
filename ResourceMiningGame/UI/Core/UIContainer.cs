@@ -16,8 +16,8 @@ namespace ResourceMiningGame.UI.Core
 
         public virtual void Add(UIElement child) //コンテナに追加
         {
-            child.X += rect.X;
-            child.Y += rect.Y;
+            //child.X += rect.X;
+            //child.Y += rect.Y;
             Children.Add(child);
             child.Parent = this;
         }
@@ -32,6 +32,8 @@ namespace ResourceMiningGame.UI.Core
         {
             if(!Visible) return false;
 
+            bool clicked = false;
+
             //自分自信のレイアウトを更新
             this.RecalculateLayout();
 
@@ -39,9 +41,9 @@ namespace ResourceMiningGame.UI.Core
             foreach (UIElement child in Children)
             {
                 child.RecalculateLayout();
-                child.Update(mouse);
+                clicked |= child.Update(mouse);
             }
-            return false;
+            return clicked;
         }
 
         public override void Draw(SpriteBatch sb) //すべての子要素と背景を描画

@@ -16,6 +16,7 @@ namespace ResourceMiningGame.UI.Elements
         public Color HoverFillColor;
         public Texture2D Icon; //アイコン画像
         public bool IsImageButton = false; //テキストボタンか画像ボタンか
+        public event Action? OnClicked;
 
         SpriteFont font; //フォントデータ
 
@@ -48,7 +49,11 @@ namespace ResourceMiningGame.UI.Elements
             bool hover = ColorChangeWithHover(mouse.Current.Position); //マウスがRect上にあるなら色を変える
 
             // クリック瞬間判定（押した瞬間だけtrue）
-            return hover && mouse.LeftClicked();
+            bool clicked = hover && mouse.LeftClicked();
+            if (clicked)
+                OnClicked?.Invoke();
+
+            return clicked;
         }
 
         public override bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse) //画面が移動した時のUpdate処理

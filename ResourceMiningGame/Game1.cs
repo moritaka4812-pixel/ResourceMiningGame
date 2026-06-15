@@ -19,7 +19,11 @@ namespace ResourceMiningGame
             Content.RootDirectory = "Content"; // コンテントディレクトリのルートを指定
             IsMouseVisible = true; // マウスカーソルを表示
             Input = new InputManager(); //インプット管理をするインスタンスを生成
+
             Window.AllowUserResizing = true; //ウィンドウサイズを変更可能に
+            _graphics.PreferredBackBufferWidth = 800; //最小画面横幅
+            _graphics.PreferredBackBufferHeight = 600; //最小画面縦幅
+            Window.ClientSizeChanged += OnResize;
             Window.ClientSizeChanged += OnClientSizeChanged; //ウィンドウが変更されたらイベントを呼ぶ
         }
 
@@ -85,6 +89,20 @@ namespace ResourceMiningGame
                 if (!screen.IsTransparent) break; //スクリーン透過ができない
             }
             base.Draw(gameTime); // ベースクラスのDraw()
+        }
+        
+        public void OnResize(object sender, EventArgs e)
+        {
+            int minWidth = 800;
+            int minHeight = 600;
+
+            if(Window.ClientBounds.Width < minWidth ||
+                Window.ClientBounds.Height < minHeight)
+            {
+                _graphics.PreferredBackBufferWidth = Math.Max(Window.ClientBounds.Width, minWidth);
+                _graphics.PreferredBackBufferHeight = Math.Max(Window.ClientBounds.Height, minHeight);
+                _graphics.ApplyChanges();
+            }
         }
 
         private void OnClientSizeChanged(object sendeer, EventArgs e) //ウィンドウサイズ変更されたら呼ばれる
