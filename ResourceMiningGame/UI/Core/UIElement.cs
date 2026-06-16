@@ -51,7 +51,8 @@ namespace ResourceMiningGame.UI.Core
         public virtual bool OnWheel(MouseInput mouse, int delta) { return false; }
         public virtual bool OnDrag(MouseInput mouse, Point delta) { return false; }
         public virtual bool OnHover(MouseInput mouse) { return false; }
-
+        //ホバー解除用
+        public virtual void OnHoverExit() {}
 
         public static void Initialize(GraphicsDevice device)
         {
@@ -103,6 +104,7 @@ namespace ResourceMiningGame.UI.Core
         public virtual bool Update(MouseInput mouse) //ベースとしてのマウス入力の吸収処理
         {
             if(!Visible) return false;
+
             bool consumed = false;
             bool hit = HitTest(mouse.Current.Position);
 
@@ -155,6 +157,10 @@ namespace ResourceMiningGame.UI.Core
 
                 else
                     consumed |= OnHover(mouse);
+            }
+            else
+            {
+                OnHoverExit();
             }
 
             return consumed;

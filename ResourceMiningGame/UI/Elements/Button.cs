@@ -43,27 +43,42 @@ namespace ResourceMiningGame.UI.Elements
             IsImageButton = true;
         }
 
-        public override bool Update(MouseInput mouse)
+        public override bool OnLeftClick(MouseInput mouse)
         {
-            if (!Visible) return false;
-            bool hover = ColorChangeWithHover(mouse.Current.Position); //マウスがRect上にあるなら色を変える
+            OnClicked?.Invoke();
+            return true; //クリック吸収
+        }
 
-            // クリック瞬間判定（押した瞬間だけtrue）
-            bool clicked = hover && mouse.LeftClicked();
-            if (clicked)
-                OnClicked?.Invoke();
+        public override bool OnHover(MouseInput mouse) //ホバー時
+        {
+            ColorChangeWithHover(mouse.Current.Position);
+            return false;
+        }
 
-            return clicked;
+        public override void OnHoverExit() //非ホバー時
+        {
+            FillColor = NormalFillColor;
+            BorderColor = Color.White;
         }
 
         public override bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse) //画面が移動した時のUpdate処理
         {
             if (!Visible) return false;
             var pos = new Point(mouse.Current.Position.X - offsetX, mouse.Current.Position.Y - offsetY); //内部の相対座標を計算（ミシンの縫物のイメージ）描画と内部のズレがoffset
-            bool hover = ColorChangeWithHover(pos);
 
-            // クリック瞬間判定（押した瞬間だけtrue）
-            return hover && mouse.LeftClicked();
+            bool consumed = false;
+
+            //ホバー
+            ColorChangeWithHover(pos);
+
+            //左クリック判定
+            if(Rect.Contains(pos) && mouse.LeftClicked())
+            {
+                OnClicked?.Invoke();
+                consumed = true;
+            }
+
+            return consumed;
         }
 
         public override void Draw(SpriteBatch sb)
