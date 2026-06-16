@@ -1,6 +1,6 @@
 ﻿using ResourceMiningGame.Screens;
-using ResourceMiningGame.UI;
-using Button = ResourceMiningGame.UI.Button;
+using ResourceMiningGame.UI.Core;
+using Button = ResourceMiningGame.UI.Elements.Button;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
@@ -17,12 +17,12 @@ namespace ResourceMiningGame.Screens
             LoadContent();
         }
 
-        private void LoadContent()
+        public override void LoadContent()
         {
             var ui = new UIFactory(game); //UIを作るインスタンスを生成
 
-            backButton = ui.CreateTextButton(350, 350, 350, 100, "Back");
-            backToTitleButton = ui.CreateTextButton(350, 150, 350, 100, "Back To Title");
+            backButton = ui.CreateTextButton("Back", 350, 350, 350, 100);
+            backToTitleButton = ui.CreateTextButton("Back to title", 350, 150, 350, 100);
 
             pixel = new Texture2D(game.GraphicsDevice, 1, 1);
             pixel.SetData(new[] { Color.White });

@@ -2,13 +2,14 @@
 using ResourceMiningGame.Core;
 using ResourceMiningGame.Maps;
 using ResourceMiningGame.Maps.Tiles;
-using ResourceMiningGame.UI;
+using ResourceMiningGame.UI.Setup;
 using ResourceMiningGame.Controller;
-using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using Button = ResourceMiningGame.UI.Button;
-using Keys = Microsoft.Xna.Framework.Input.Keys;
+using Button = ResourceMiningGame.UI.Elements.Button;
+using ResourceMiningGame.UI.Core;
+using ResourceMiningGame.GameUI;
+using ResourceMiningGame.UI.Elements;
 
 namespace ResourceMiningGame.Screens
 {
@@ -22,6 +23,7 @@ namespace ResourceMiningGame.Screens
         TileSelectionController tileSelectionController; //タイル選択を処理
         IMap map; //マップ情報
         Button settingsButton; //セッティングボタン
+        ToolPanel toolPanel; //左に表示されるツールパネル
 
         public GamePlayScreen(Game1 game) : base(game)
         {
@@ -30,40 +32,76 @@ namespace ResourceMiningGame.Screens
             map = new Map1();
             tileAnimator = new TileAnimator(map);
             tileSelectionController = new TileSelectionController(map);
+            uiSet = new SetUIElements();
             this.LoadContent();
         }
         public override bool IsTransparent => true;
-        public void LoadContent()
+        public override void LoadContent()
         {
             var ui = new UIFactory(game); //UIを生成するインスタンス
             map.LoadContent(game.Content); //マップをロード
 
-            settingsButton = ui.CreateImageButton(760, 20, 32, 32, "UI/gear"); //セッティングボタンを生成
+            settingsButton = ui.CreateImageButton("UI/gear", 760, 20, 32, 32); //セッティングボタンを生成
             settingsButton.SetBackgroundColor(Color.White); //背景色を再設定
+            settingsButton.Anchor = UIAnchor.TopRight; //アンカーを指定
+            settingsButton.PaddingX = 10;
+            settingsButton.PaddingY = 10;
+            settingsButton.OnClicked += () => game.PushScreen(new GameSettingScreen(game));
+
+            toolPanel = new ToolPanel(ui);
+            var toolScrollList = new ScrollMultiList();
+            toolScrollList.RelativeY = 0.15f;
+            toolScrollList.RelativeHeight = 0.7f;
+            toolScrollList.RelativeWidth = 1f;
+            toolScrollList.Add(ui.CreateTextButton("a", 0, 0, 1, 1));
+            toolScrollList.Add(ui.CreateTextButton("b", 0, 0, 1, 1));
+            toolScrollList.Add(ui.CreateTextButton("c", 0, 0, 1, 1));
+            toolScrollList.Add(ui.CreateTextButton("d", 0, 0, 1, 1));
+            toolPanel.panel.AddChild(toolScrollList);
+
+            uiSet.Add(settingsButton);
 
             pixel = new Texture2D(game.GraphicsDevice, 1, 1); //Draw用のテクスチャ作成
             pixel.SetData(new[] { Color.White });
+
+            base.LoadContent();
         }
         public override void Update(GameTime gameTime)
         {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds; //フレーム間の変化量
 
-            controller.Update(game.Input); //入力からカメラの意図[移動・ズーム・ドラッグ]の状態を更新
-            controller.ApplyToCamera(camera, dt); //更新された操作意図をCameraに適用して動かす
+            //UIのクリック処理
+            bool uiConsumed = false;
+            uiConsumed |= toolPanel.Update(game.Input.Mouse);
+            uiConsumed |= settingsButton.Update(game.Input.Mouse);
 
-
-            //セッティングボタンが押されたかの処理
-            if (settingsButton.Update(game.Input.Mouse))
+            //UIがホイールの入力を吸収していないときだけカメラ操作
+            if (!uiConsumed)
             {
-                game.PushScreen(new GameSettingScreen(game));
+                controller.Update(game.Input); //入力からカメラの意図[移動・ズーム・ドラッグ]の状態を更新
+                //更新された操作意図をCameraに適用して動かす
+                if (controller.ZoomDelta != 0)
+                    camera.ZoomAt(controller.ZoomDelta, game.Input.Mouse.Current.Position.ToVector2());
+                if (controller.MoveDirection != Vector2.Zero)
+                    camera.Move(controller.MoveDirection * 500f * dt / camera.Zoom);
+                if (controller.DragDelta != Vector2.Zero)
+                    camera.Drag(controller.DragDelta);
+            }
+
+            //UIが入力を吸収していないときだけタイル操作
+            if (!uiConsumed)
+            {
+                //左クリックでタイル選択
+                var result = tileSelectionController.SelectTile(game.Input.Mouse, camera);
+
+                if (result.Type == TileSelectionResultType.Selected)
+                    selectedTile = result.Tile;
+                else if (result.Type == TileSelectionResultType.Outside)
+                    selectedTile = null;
             }
 
             //タイル更新(アニメーション)
             tileAnimator.UpdateVisibleTiles(gameTime, camera, game.GraphicsDevice);
-
-            //左クリックでタイル選択
-            selectedTile = tileSelectionController.SelectTile(game.Input.Mouse, camera);
-
         }
 
         public override void Draw(SpriteBatch sb)
@@ -90,6 +128,8 @@ namespace ResourceMiningGame.Screens
 
             //UIの描画（スクリーン座標）
             sb.Begin();
+
+            toolPanel.Draw(sb);
 
             settingsButton.Draw(sb);
 

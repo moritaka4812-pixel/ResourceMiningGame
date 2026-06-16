@@ -13,6 +13,13 @@ namespace ResourceMiningGame.Input
         {
             Current = Mouse.GetState();
         }
+
+        public MouseInput(MouseState current, MouseState previous)
+        {
+            Current = current;
+            Previous = previous;
+        }
+
         public void Update() 
         {
             // マウス状態を更新
@@ -46,6 +53,33 @@ namespace ResourceMiningGame.Input
         public Point PointDelta() //マウス位置の変化量
         {
             return Current.Position - Previous.Position;
+        }
+
+        public MouseInput WithOffset(int offsetX, int offsetY)
+        {
+            var newCurrent = new MouseState(
+                Current.X - offsetX,
+                Current.Y - offsetY,
+                Current.ScrollWheelValue,
+                Current.LeftButton,
+                Current.MiddleButton,
+                Current.RightButton,
+                Current.XButton1,
+                Current.XButton2
+                );
+
+            var newPrevious = new MouseState(
+                Previous.X - offsetX,
+                Previous.Y - offsetY,
+                Previous.ScrollWheelValue,
+                Previous.LeftButton,
+                Previous.MiddleButton,
+                Previous.RightButton,
+                Previous.XButton1,
+                Previous.XButton2
+                );
+
+            return new MouseInput(newCurrent, newPrevious);
         }
     }
 }

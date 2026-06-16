@@ -4,79 +4,55 @@
 //          スクリーンに表示するための内部座標上に存在する座標。原点はtransformMatrixの影響を受ける
 
 using MyUI = ResourceMiningGame.UI;
-using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-
+using ScrollBar = ResourceMiningGame.UI.Elements.ScrollBar;
+using ResourceMiningGame.UI.Core;
 using ResourceMiningGame.Core;
-using ResourceMiningGame.UI;
+using ResourceMiningGame.Maps;
+using ResourceMiningGame.UI.Elements;
 
 namespace ResourceMiningGame.Screens
 {
     public class LevelSelectScreen : ScreenBase
     {
-        ScrollView scroll; //スクロール画面のための処理クラス
-        MyUI.ScrollBar bar; //スクロールバーUI
-        List<MyUI.Button> levelButtons; //レベル選択のためのボタンリスト
-        Texture2D white; //１ドットの白テクスチャ
+        MyUI.Elements.ScrollBar bar; //スクロールバーUI
+        ScrollList listUI; //スクロール表示するUIリスト
         
 
         public LevelSelectScreen(Game1 game) : base(game)
         {
-            white = new Texture2D(game.GraphicsDevice, 1, 1); //1ドットのテクスチャ作成
-            white.SetData(new[] { Color.White }); //白いテクスチャを割り当て
             var ui = new UIFactory(game); //UI生成インスタンス
+            listUI = new ScrollList(20) { 
+                RelativeX = 0.1f, RelativeY = 0.05f, RelativeWidth = 0.9f, RelativeHeight = 0.95f}; //スクロール表示のUIインスタンス
 
-            scroll = new ScrollView( //スクロール画面を初期化
-                game.GraphicsDevice,
-                new Rectangle(100, 100, 600, 500),
-                contentHeight: 1000
-                );
+            bar = new ScrollBar(50, 50, 20, 800) { RelativeX = 0.02f, RelativeY = 0.05f, RelativeWidth = 0.03f, RelativeHeight = 0.95f}; //スクロールバーUIを初期化
 
-            bar = new MyUI.ScrollBar //スクロールバーUIを初期化
+            listUI.SetScrollBar(bar); //対応するスクロールバーを指定
+
+            for(int i= 0; i < 10; i++) 
             {
-                BarRect = new Rectangle(50, 100, 20, 500),
-                HandleRect = new Rectangle(50, 100, 20, 80)
-            };
 
-            levelButtons = new List<MyUI.Button>(); //リスト初期化
-
-            for(int i= 0; i < 10; i++) //ボタンのリストを作成
-            {
-                levelButtons.Add(ui.CreateTextButton(120, 120 + i * 100, 500, 80, $"Stage {i + 1}")); //テキストボタンを生成
+                var btn = ui.CreateTextButton($"stage {i+1}", 0 , 0, 400, 50);
+                listUI.Add(btn, () =>
+                {
+                    game.ChangeScreen(new GamePlayScreen(game));
+                });
+                
             }
 
         }
 
         public override void Update(GameTime gameTime)
         {
-            scroll.Update(); //スクロール画面の更新
-            bar.Update(scroll.ScrollY, scroll.ContentHeight, scroll.ViewRect.Height); //スクロール画面の更新
-
-            foreach( var btn in levelButtons) //各ボタンが押されたかの確認
-            {
-                if (btn.UpdateWithOffset(0, - scroll.ScrollY, game.Input.Mouse))　//内部座標に変換して押されたか(-scroll.ScrollYはScrollViewのtransformMatrixに依存するもの)
-                {
-                    // Load level
-                    game.ChangeScreen(new GamePlayScreen(game)); //ゲームプレイスクリーンに切り替える
-                }
-            }
+            listUI.Update(game.Input.Mouse);
         }
         public override void Draw(SpriteBatch sb)
         {
             sb.Begin();
 
+            listUI.Draw(sb);
             //スクロールバーの描画
-            bar.Draw(sb, white);
-
-            sb.End();
-            //GPUのラスタリズ設定のうちにScissorを使って描画範囲を切り抜くように指示する設定
-            var raster = new RasterizerState() { ScissorTestEnable = true };
-            //spriteBatchに改めてScissorを使うことを指示し、使うMatrixを指定
-            sb.Begin(rasterizerState: raster, transformMatrix: scroll.GetMatrix());
-            //描画範囲のScissorRectgangleをスクロール画面のViewRectに設定
-            game.GraphicsDevice.ScissorRectangle = scroll.ViewRect;
-            //内部座標に各ボタンを描画
-            foreach (var btn in levelButtons) btn.Draw(sb);
+            bar.Draw(sb);
 
             sb.End();
         }

@@ -1,15 +1,13 @@
 ﻿using Rect = Microsoft.Xna.Framework.Rectangle;
 using Color = Microsoft.Xna.Framework.Color;
-using Input = Microsoft.Xna.Framework.Input;
 using Point = Microsoft.Xna.Framework.Point;
 using MouseInput = ResourceMiningGame.Input.MouseInput;
-using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using ResourceMiningGame.UI.Core;
 
-namespace ResourceMiningGame.UI
+namespace ResourceMiningGame.UI.Elements
 {
-    public class Button
+    public class Button : UIElement
     {
-        public Rect Rect;
         public string Text;
         public Color TextColor;
         public Color FillColor;
@@ -18,14 +16,13 @@ namespace ResourceMiningGame.UI
         public Color HoverFillColor;
         public Texture2D Icon; //アイコン画像
         public bool IsImageButton = false; //テキストボタンか画像ボタンか
-        private ButtonState prevState = ButtonState.Released;
+        public event Action? OnClicked;
 
-        Texture2D whiteTex; //１ドットの白テクスチャ
         SpriteFont font; //フォントデータ
 
         public Button(GraphicsDevice device, SpriteFont font, Rect rect, string text) //テキスト付きボタン
         {
-            this.Rect = rect;　//引数受け渡しとテクスチャの初期化
+            this.rect = rect;　//引数受け渡しとテクスチャの初期化
             this.Text = text;
             this.font = font;
             this.TextColor = Color.White;
@@ -33,42 +30,60 @@ namespace ResourceMiningGame.UI
             this.BorderColor = Color.White;
             this.NormalFillColor = Color.DarkSlateGray;
             this.HoverFillColor = Color.Gray;
-            whiteTex = new Texture2D(device, 1, 1);
-            whiteTex.SetData(new[] { Color.White });
         }
 
         public Button(GraphicsDevice device, Texture2D icon, Rect rect) //イメージ付きボタン
         {
             this.Icon = icon;
-            this.Rect = rect;
+            this.rect = rect;
             this.FillColor = Color.DarkSlateGray;
             this.BorderColor= Color.White;
             this.NormalFillColor = Color.DarkSlateGray;
             this.HoverFillColor= Color.Gray;
             IsImageButton = true;
-            whiteTex = new Texture2D(device, 1, 1);
-            whiteTex.SetData(new[] { Color.White });
         }
 
-        public bool Update(MouseInput mouse)
+        public override bool OnLeftClick(MouseInput mouse)
         {
-            bool hover = ColorChangeWithHover(mouse.Current.Position); //マウスがRect上にあるなら色を変える
-
-            // クリック瞬間判定（押した瞬間だけtrue）
-            return hover && mouse.LeftClicked();
+            OnClicked?.Invoke();
+            return true; //クリック吸収
         }
 
-        public bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse) //画面が移動した時のUpdate処理
+        public override bool OnHover(MouseInput mouse) //ホバー時
         {
+            ColorChangeWithHover(mouse.Current.Position);
+            return false;
+        }
+
+        public override void OnHoverExit() //非ホバー時
+        {
+            FillColor = NormalFillColor;
+            BorderColor = Color.White;
+        }
+
+        public override bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse) //画面が移動した時のUpdate処理
+        {
+            if (!Visible) return false;
             var pos = new Point(mouse.Current.Position.X - offsetX, mouse.Current.Position.Y - offsetY); //内部の相対座標を計算（ミシンの縫物のイメージ）描画と内部のズレがoffset
-            bool hover = ColorChangeWithHover(pos);
 
-            // クリック瞬間判定（押した瞬間だけtrue）
-            return hover && mouse.LeftClicked();
+            bool consumed = false;
+
+            //ホバー
+            ColorChangeWithHover(pos);
+
+            //左クリック判定
+            if(Rect.Contains(pos) && mouse.LeftClicked())
+            {
+                OnClicked?.Invoke();
+                consumed = true;
+            }
+
+            return consumed;
         }
 
-        public void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb)
         {
+            if (!Visible) return;
             //背景
             sb.Draw(whiteTex, Rect, FillColor);
             //ボタンの枠

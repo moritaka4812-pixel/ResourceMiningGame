@@ -14,9 +14,9 @@ namespace ResourceMiningGame.Controller
             this.map = map;
         }
 
-        public Tile SelectTile(MouseInput mouse, Camera camera) //選択されたタイルを返す
+        public TileSelectionResult SelectTile(MouseInput mouse, Camera camera) //選択されたタイルを返す
         {
-            if(!mouse.LeftClicked()) return null; //マウスが押されていない
+            if(!mouse.LeftClicked()) return new TileSelectionResult(TileSelectionResultType.None, null); //マウスが押されていない
 
             Vector2 screenPos = mouse.Current.Position.ToVector2(); //マウスの位置を取得
             Matrix inverse = Matrix.Invert(camera.GetViewMatrix()); //カメラの逆行列を取得
@@ -26,9 +26,9 @@ namespace ResourceMiningGame.Controller
             int tileY = (int)(worldPos.Y / 16);
 
             if (tileX < 0 || tileX >= map.MapSizeX || tileY < 0 || tileY >= map.MapSizeY) //マップの範囲外
-                return null;
+                return new TileSelectionResult(TileSelectionResultType.Outside, null);
 
-            return map.GetTile(tileX, tileY);
+            return new TileSelectionResult(TileSelectionResultType.Selected, map.GetTile(tileX, tileY));
         }
     }
 }
