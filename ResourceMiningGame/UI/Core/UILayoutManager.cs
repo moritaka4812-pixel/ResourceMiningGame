@@ -38,7 +38,7 @@
                 );
         }
 
-        public static Vector2 AnchorLeftCenter(int screenW, int screenH, int uiW, int uiH, int paddingX, int paddingY)
+        public static Vector2 AnchorCenterLeft(int screenW, int screenH, int uiW, int uiH, int paddingX, int paddingY)
         {
             return new Vector2(
                 paddingX,
@@ -69,8 +69,8 @@
                 case UIAnchor.Center:
                     return AnchorCenter(screenW, screenH, uiW, uiH, paddingX, paddingY);
 
-                case UIAnchor.LeftCenter:
-                    return AnchorLeftCenter(screenW, screenH, uiW, uiH, paddingX, paddingY);
+                case UIAnchor.CenterLeft:
+                    return AnchorCenterLeft(screenW, screenH, uiW, uiH, paddingX, paddingY);
                 default:
                     return Vector2.Zero;
             }

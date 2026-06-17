@@ -12,63 +12,49 @@ namespace ResourceMiningGame.GameUI
         public Panel panel; //UI.Elements.Panel
         private Button handleButton; //取って
         private bool isOpen;
-        private float currentX;
         private float targetX;
+        float openX;
+        float closedX;
 
         public ToolPanel(UIFactory ui)
         {
             panel = new Panel(200, 300);
-            panel.Anchor = UIAnchor.LeftCenter;
             panel.RelativeHeight = 1f;
             panel.RelativeWidth = 0.35f;
-            panel.IgnoreLayoutX = true;
+            panel.RelativeX = -panel.RelativeWidth; //初期の閉じている状態
+            panel.RelativeY = 0f;
             panel.OnLeftClickHandler = (MouseInput) => true;
 
             handleButton = ui.CreateTextButton("T", 0, 0, 40, 40);
-
+            panel.AddChild(handleButton);
+            handleButton.RelativeX = 1f;
+            handleButton.RelativeY = 0.50f;
             handleButton.OnClicked += Toggle;
 
             panel.RecalculateLayout();
+            handleButton.RecalculateLayout();
 
             isOpen = false;
-            currentX = -panel.Width;
-            targetX = currentX;
-            panel.X = (int)currentX;
+            openX = 0f;
+            closedX = (float) - panel.RelativeWidth;
         }
 
         private void Toggle()
         {
             isOpen = !isOpen;
-            targetX = isOpen ? 0 : -panel.Width;
+            targetX = isOpen ? 0 : (float) -panel.RelativeWidth;
         }
 
         public bool Update(MouseInput mouse)
         {
-            panel.RecalculateLayout();
+            panel.RelativeX = MathHelper.Lerp((float)panel.RelativeX, isOpen ? openX : closedX, 0.2f);
 
-            //画面サイズ変更に対応
-            targetX = isOpen ? 0 : -panel.Width;
-
-            //スライドアニメーション
-            currentX = MathHelper.Lerp(currentX, targetX, 0.2f);
-            panel.X = (int)currentX;
-            //取ってボタンの一をパネルの右中央に合わせる
-            handleButton.X = panel.X + panel.Width;
-            handleButton.Y = panel.Y + (panel.Height - handleButton.Height) / 2;
-
-            bool clicked = false;
-
-            clicked |= panel.Update(mouse);
-            clicked |= handleButton.Update(mouse);
-
-            //クリックを受け取ったらTrueを返す
-            return clicked;
+            return panel.Update(mouse);
         }
 
         public void Draw(SpriteBatch sb)
         {
             panel.Draw(sb);
-            handleButton.Draw(sb);
         }
     }
 }
