@@ -22,8 +22,16 @@ namespace ResourceMiningGame.Screens
             var ui = new UIFactory(game); //UIを作るインスタンスを生成
 
             backButton = ui.CreateTextButton("Back", 350, 350, 350, 100);
-            backToTitleButton = ui.CreateTextButton("Back to title", 350, 150, 350, 100);
+            backButton.RelativeX = 0.2f;
+            backButton.RelativeY = 0.2f;
+            backButton.RelativeHeight = 0.1f;
+            backButton.RelativeWidth = 0.6f;
 
+            backToTitleButton = ui.CreateTextButton("Back to title", 350, 150, 350, 100);
+            backToTitleButton.RelativeX = 0.2f;
+            backToTitleButton.RelativeY = 0.4f;
+            backToTitleButton.RelativeHeight = 0.1f;
+            backToTitleButton.RelativeWidth = 0.6f;
             pixel = new Texture2D(game.GraphicsDevice, 1, 1);
             pixel.SetData(new[] { Color.White });
         }
