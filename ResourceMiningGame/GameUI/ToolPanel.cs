@@ -44,6 +44,11 @@ namespace ResourceMiningGame.GameUI
 
         public bool Update(MouseInput mouse)
         {
+            panel.RecalculateLayout();
+
+            //画面サイズ変更に対応
+            targetX = isOpen ? 0 : -panel.Width;
+
             //スライドアニメーション
             currentX = MathHelper.Lerp(currentX, targetX, 0.2f);
             panel.X = (int)currentX;
