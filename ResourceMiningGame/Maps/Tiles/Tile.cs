@@ -23,8 +23,8 @@ namespace ResourceMiningGame.Maps.Tiles
         public Tile(TileType Type,　//タイルはType, Positionのみでnew可能
                     Vector2 Position,
                     int FrameCount = 1, //その他の初期設定
-                    int FrameWidth = 16,
-                    int FrameHeight = 16,
+                    int FrameWidth = 32,
+                    int FrameHeight = 32,
                     float FrameTime = 0.25f)
         {
             this.Type = Type;

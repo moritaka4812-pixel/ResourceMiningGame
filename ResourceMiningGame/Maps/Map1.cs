@@ -21,7 +21,7 @@ namespace ResourceMiningGame.Maps
                     MapTiles[x, y] = new Tiles.Tile
                     (
                         (x + y) % 3 == 0 ? Tiles.TileType.Copper : Tiles.TileType.Ground, //Type
-                        new Vector2(x * 16, y * 16) //Position
+                        new Vector2(x * 32, y * 32) //Position
                     );
                 }
             }

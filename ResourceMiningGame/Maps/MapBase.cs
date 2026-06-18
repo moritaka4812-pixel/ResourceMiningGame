@@ -9,7 +9,7 @@ namespace ResourceMiningGame.Maps
         public Tiles.Tile[,] MapTiles { get; set; }
         public int MapSizeX { get; set; }
         public int MapSizeY { get; set; }
-        public int TileSize = 16;
+        public int TileSize = 32;
 
         public VisibleTileRange GetVisibleRange(Camera camera, GraphicsDevice graphics) //マップの必要なワールド座標での描画範囲（タイル範囲）を取得
         {

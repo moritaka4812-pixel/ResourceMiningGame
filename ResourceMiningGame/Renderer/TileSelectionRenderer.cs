@@ -19,7 +19,7 @@ namespace ResourceMiningGame.Renderer
             if (selectedTile == null) return;
 
             var pos = selectedTile.Position;
-            int size = 16;
+            int size = 32;
 
             sb.Draw(pixel, new Rectangle((int)pos.X, (int)pos.Y, size, 1), Color.Yellow);
             sb.Draw(pixel, new Rectangle((int)pos.X, (int)pos.Y + size - 1, size, 1), Color.Yellow);
