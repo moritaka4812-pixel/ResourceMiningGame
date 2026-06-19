@@ -20,7 +20,10 @@ namespace ResourceMiningGame.System
             controller.Update(game.Input);//入力からカメラの意図[移動・ズーム・ドラッグ]の状態を更新
             //更新された操作意図をCameraに適用して動かす
             if (controller.ZoomDelta != 0)
-                camera.ZoomAt(controller.ZoomDelta, game.Input.Mouse.Current.Position.ToVector2());
+                camera.ZoomAt(
+                    controller.ZoomDelta, game.Input.Mouse.Current.Position.ToVector2(),
+                    game.GraphicsDevice.Viewport.Width,
+                    game.GraphicsDevice.Viewport.Height);
 
             if (controller.MoveDirection != Vector2.Zero)
                 camera.Move(controller.MoveDirection * 500f * dt / camera.Zoom);

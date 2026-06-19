@@ -1,9 +1,12 @@
 ﻿using Color = Microsoft.Xna.Framework.Color;
 using Button = ResourceMiningGame.UI.Elements.Button;
+using Panel = ResourceMiningGame.UI.Elements.Panel;
 using ResourceMiningGame.GameUI;
 using ResourceMiningGame.UI.Core;
 using ResourceMiningGame.Screens;
 using ResourceMiningGame.UI.Elements;
+using ResourceMiningGame.Maps.Buildings;
+using ResourceMiningGame.Core;
 
 namespace ResourceMiningGame.ScreenUI
 {
@@ -11,14 +14,18 @@ namespace ResourceMiningGame.ScreenUI
     {
         private Game1 game;
         private UIFactory ui;
+        private WorldUIFactory worldui;
+        private GamePlayScreen screen;
 
-        public GamePlayUIScreenBuilder(Game1 game)
+        public GamePlayUIScreenBuilder(Game1 game, GamePlayScreen screen, Camera camera)
         {
             this.game = game;
             this.ui = new UIFactory(game);
+            this.screen = screen;
+            this.worldui = new WorldUIFactory(game, camera);
         }
 
-        public (Button settingsButton, ToolPanel toolPanel) BuildUI() //GamePlayScreenのUI
+        public (Button settingsButton, ToolPanel toolPanel, WorldPanel confirmPanel) BuildUI() //GamePlayScreenのUI
         {
             var settingsButton = ui.CreateImageButton("UI/gear", 760, 20, 32, 32);
             settingsButton.SetBackgroundColor(Color.White);
@@ -28,19 +35,18 @@ namespace ResourceMiningGame.ScreenUI
             settingsButton.OnClicked += () => game.PushScreen(new GameSettingScreen(game));
 
             var toolPanel = new ToolPanel(ui);
-            var list = new ScrollMultiList();
-            list.RelativeY = 0.15f;
-            list.RelativeHeight = 0.7f;
-            list.RelativeWidth = 1f;
 
-            list.Add(ui.CreateTextButton("a", 0, 0, 1, 1));
-            list.Add(ui.CreateTextButton("b", 0, 0, 1, 1));
-            list.Add(ui.CreateTextButton("c", 0, 0, 1, 1));
-            list.Add(ui.CreateTextButton("d", 0, 0, 1, 1));
+            toolPanel.OnBuildRequested += (type) => screen.EnterBuildMode(type);
 
-            toolPanel.panel.AddChild(list);
+            var confirmPanel = worldui.CreateWorldPanel(80, 40);
 
-            return (settingsButton, toolPanel);
+            var okButton = worldui.CreateWorldTextButton("o", 0, 0, 40, 40);
+            var cancelButton = worldui.CreateWorldTextButton("x", 40, 0, 40, 40);
+
+            confirmPanel.AddChild(okButton);
+            confirmPanel.AddChild(cancelButton);
+
+            return (settingsButton, toolPanel, confirmPanel);
         }
     }
 }

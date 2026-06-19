@@ -1,8 +1,9 @@
-﻿using Rect = Microsoft.Xna.Framework.Rectangle;
+﻿using ResourceMiningGame.UI.Core;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Taskbar;
 using Color = Microsoft.Xna.Framework.Color;
-using Point = Microsoft.Xna.Framework.Point;
 using MouseInput = ResourceMiningGame.Input.MouseInput;
-using ResourceMiningGame.UI.Core;
+using Point = Microsoft.Xna.Framework.Point;
+using Rect = Microsoft.Xna.Framework.Rectangle;
 
 namespace ResourceMiningGame.UI.Elements
 {
@@ -18,7 +19,7 @@ namespace ResourceMiningGame.UI.Elements
         public bool IsImageButton = false; //テキストボタンか画像ボタンか
         public event Action? OnClicked;
 
-        SpriteFont font; //フォントデータ
+        protected SpriteFont font; //フォントデータ
 
         public Button(GraphicsDevice device, SpriteFont font, Rect rect, string text) //テキスト付きボタン
         {
@@ -110,6 +111,60 @@ namespace ResourceMiningGame.UI.Elements
                 sb.DrawString(font, Text, pos, TextColor);
             }
         }
+        /*
+
+        public void DrawAt(SpriteBatch sb, Rect rect) //ワールド座標でのDraw
+        {
+            sb.Draw(whiteTex, rect, NormalFillColor);
+
+            //ボタンの枠
+            DrawRectangle(sb, rect, 3, BorderColor);
+
+            if (font != null && !string.IsNullOrEmpty(Text))
+            {
+                var size = font.MeasureString(Text);
+                var pos = new Vector2(rect.X + (rect.Width - size.X) / 2,
+                                      rect.Y + (rect.Height - size.Y) / 2);
+                sb.DrawString(font, Text, pos, TextColor);
+            }
+        }
+
+        public bool HitTestWorld(Vector2 worldPos, int parentX, int parentY) //ワールド座標でのHitTest
+        {
+            var worldRect = new Rect(
+                parentX + Rect.X,
+                parentY + Rect.Y,
+                Rect.Width,
+                Rect.Height
+                );
+
+            return worldRect.Contains(worldPos);
+        }
+
+        public void OnHoverWorld(Vector2 worldPos, int parentX, int parentY)
+        {
+            var worldRect = new Rect(
+                parentX + Rect.X,
+                parentY + Rect.Y,
+                Rect.Width,
+                Rect.Height
+                );
+
+            bool hover = worldRect.Contains(worldPos);
+
+            if (hover)
+            {
+                FillColor = HoverFillColor;
+                BorderColor = Color.Yellow;
+            }
+            else
+            {
+                FillColor = NormalFillColor;
+                BorderColor = Color.White;
+            }
+
+        }
+        */
 
         public void SetBackgroundColor(Color color) //背景色変更メソッド
         {
@@ -139,7 +194,7 @@ namespace ResourceMiningGame.UI.Elements
             return hover;
         }
 
-        void DrawRectangle(SpriteBatch sb, Rect rect, int thickness, Color color)
+        protected void DrawRectangle(SpriteBatch sb, Rect rect, int thickness, Color color)
         {
             sb.Draw(whiteTex, new Rect(rect.X, rect.Y, rect.Width, thickness), color); // 上
             sb.Draw(whiteTex, new Rect(rect.X, rect.Y, thickness, rect.Height), color); // 左

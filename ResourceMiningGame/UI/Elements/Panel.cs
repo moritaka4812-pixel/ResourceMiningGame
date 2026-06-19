@@ -48,25 +48,30 @@ namespace ResourceMiningGame.UI.Elements
         {
             if (!Visible) return false;
 
-            bool consumed = base.Update(mouse);
+            bool consumed = false;
 
-            //ホイールやクリックをPanelの背景で吸収したなら子要素に渡さない
-            if (consumed) return true;
-
-            //Panel自身のレイアウト更新
+            // 1. レイアウト更新
             this.RecalculateLayout();
-
             container.Width = this.Width;
             container.Height = this.Height;
             container.X = this.X;
             container.Y = this.Y;
-
             container.RecalculateLayout();
-            //子要素の更新
+
+            // 2. Panel 自身のホイール処理（背景吸収）
+            //    base.Update を先に呼ぶと OnWheel が正しく動く
+            consumed |= base.Update(mouse);
+
+            // 3. 子要素の更新（ボタンやスクロールリスト）
             consumed |= container.Update(mouse);
+
+            // 4. 背景クリック吸収
+            if (HitTest(mouse.Current.Position) && mouse.LeftClicked())
+                consumed = true;
 
             return consumed;
         }
+
 
         public override void Draw(SpriteBatch sb)
         {

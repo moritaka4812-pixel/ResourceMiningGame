@@ -1,5 +1,6 @@
 ﻿using Tiles = ResourceMiningGame.Maps.Tiles;
 using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace ResourceMiningGame.Maps
 {
@@ -21,7 +22,7 @@ namespace ResourceMiningGame.Maps
                     MapTiles[x, y] = new Tiles.Tile
                     (
                         (x + y) % 3 == 0 ? Tiles.TileType.Copper : Tiles.TileType.Ground, //Type
-                        new Vector2(x * 32, y * 32) //Position
+                        new Vector2(x * TileSize, y * TileSize) //Position
                     );
                 }
             }

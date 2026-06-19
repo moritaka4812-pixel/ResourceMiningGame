@@ -1,4 +1,5 @@
 ﻿using ResourceMiningGame.Core;
+using Point = Microsoft.Xna.Framework.Point;
 using Tiles = ResourceMiningGame.Maps.Tiles;
 
 namespace ResourceMiningGame.Maps
@@ -15,5 +16,7 @@ namespace ResourceMiningGame.Maps
         Tiles.Tile GetTile(int x, int y); //指定されたタイルを返すメソッド
         
         VisibleTileRange GetVisibleRange(Camera camera, GraphicsDevice graphics); //ワールド座標上のカメラ範囲を返す
+
+        public Point WorldToTile(Vector2 worldPos);
     }
 }

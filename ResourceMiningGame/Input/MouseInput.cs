@@ -39,6 +39,16 @@ namespace ResourceMiningGame.Input
                    Previous.RightButton == ButtonState.Released;
         }
 
+        public bool RightDown()
+        {
+            return Current.RightButton == ButtonState.Pressed;
+        }
+
+        public bool RightDragging()
+        {
+            return RightDown() && PointDelta() != Point.Zero;
+        }
+
         public bool MiddleClicked() //ホイールクリックの入力処理
         {
             return Current.MiddleButton == ButtonState.Pressed &&

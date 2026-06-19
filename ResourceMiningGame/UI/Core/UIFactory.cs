@@ -1,6 +1,7 @@
 ﻿using rect = Microsoft.Xna.Framework.Rectangle;
 using Button = ResourceMiningGame.UI.Elements.Button;
 using ResourceMiningGame.UI.Elements;
+using ResourceMiningGame.GameUI;
 
 namespace ResourceMiningGame.UI.Core
 {

@@ -1,24 +1,34 @@
 ﻿
-using ResourceMiningGame.Core;
-using ResourceMiningGame.Maps;
-using ResourceMiningGame.Maps.Tiles;
-using ResourceMiningGame.UI.Setup;
+using Microsoft.VisualBasic.Devices;
 using ResourceMiningGame.Controller;
-using Color = Microsoft.Xna.Framework.Color;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using Button = ResourceMiningGame.UI.Elements.Button;
-using ResourceMiningGame.UI.Core;
+using ResourceMiningGame.Core;
 using ResourceMiningGame.GameUI;
-using ResourceMiningGame.UI.Elements;
+using ResourceMiningGame.Input;
+using ResourceMiningGame.Maps;
+using ResourceMiningGame.Maps.Buildings;
+using ResourceMiningGame.Maps.Tiles;
+using ResourceMiningGame.Renderer;
 using ResourceMiningGame.ScreenUI;
 using ResourceMiningGame.System;
-using ResourceMiningGame.Renderer;
+using ResourceMiningGame.UI.Core;
+using ResourceMiningGame.UI.Elements;
+using ResourceMiningGame.UI.Setup;
+using Button = ResourceMiningGame.UI.Elements.Button;
+using Color = Microsoft.Xna.Framework.Color;
+using Panel = ResourceMiningGame.UI.Elements.Panel;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace ResourceMiningGame.Screens
 {
     public class GamePlayScreen : ScreenBase
     {
         private Texture2D pixel; //Draw用のテクスチャ
+        private bool isBuildMode = false; //建設モードかを管理
+        private List<Point> buildTargets = new(); //建設する位置
+        private Vector2 confirmButtonWorldPos; //建設を決定するかのボタン位置
+        private BuildType currentBuildType = BuildType.None; //現在の建設モードでの建設する建物
+        private WorldPanel confirmPanel;
         public Tile selectedTile = null; //選択したタイルを格納
         Camera camera; //画面表示用のカメラ
         CameraController cameraController;
@@ -33,7 +43,7 @@ namespace ResourceMiningGame.Screens
 
         public GamePlayScreen(Game1 game) : base(game)
         {
-            camera = new Camera(new Vector2(0f, 0f)); //カメラの初期位置
+            camera = new Camera(new Vector2(0f, 0f), game); //カメラの初期位置
             cameraController = new CameraController();
             cameraSystem = new CameraSystem(camera, cameraController);
             map = new Map1();
@@ -50,8 +60,8 @@ namespace ResourceMiningGame.Screens
             var ui = new UIFactory(game); //UIを生成するインスタンス
             map.LoadContent(game.Content); //マップをロード
 
-            var builder = new GamePlayUIScreenBuilder(game);
-            (settingsButton, toolPanel) = builder.BuildUI();
+            var builder = new GamePlayUIScreenBuilder(game, this, camera);
+            (settingsButton, toolPanel, confirmPanel) = builder.BuildUI();
 
             uiSet.Add(settingsButton);
 
@@ -69,16 +79,24 @@ namespace ResourceMiningGame.Screens
             uiConsumed |= toolPanel.Update(game.Input.Mouse);
             uiConsumed |= settingsButton.Update(game.Input.Mouse);
 
+            if (isBuildMode)
+            {
+                UpdateBuildMode(game.Input.Mouse, camera);
+                uiConsumed |= confirmPanel.UpdateWorld(game.Input.Mouse);
+                return;
+            }
+
             //UIがホイールの入力を吸収していないときだけカメラ操作
             if (!uiConsumed)
                 cameraSystem.Update(game, dt);
 
-            //UIが入力を吸収していないときだけタイル操作
+                //UIが入力を吸収していないときだけタイル操作
             if (!uiConsumed)
                 tileSelectionSystem.Update(game.Input.Mouse, camera);
 
             //タイル更新(アニメーション)
             tileAnimator.UpdateVisibleTiles(gameTime, camera, game.GraphicsDevice);
+
         }
 
         public override void Draw(SpriteBatch sb)
@@ -92,6 +110,9 @@ namespace ResourceMiningGame.Screens
             // 選択タイルのハイライト
             tileSelectionRenderer.Draw(sb, tileSelectionSystem.SelectedTile);
 
+            if (isBuildMode)
+                confirmPanel.DrawWorld(sb);
+
             sb.End();
 
             //UIの描画（スクリーン座標）
@@ -102,6 +123,30 @@ namespace ResourceMiningGame.Screens
             settingsButton.Draw(sb);
 
             sb.End();
+        }
+
+        public void EnterBuildMode(BuildType type)
+        {
+            isBuildMode = true;
+            currentBuildType = type;
+            buildTargets.Clear();
+        }
+
+        private void UpdateBuildMode(MouseInput mouse, Camera camera)
+        {
+            var worldPos = camera.ScreenToWorld(mouse.Current.Position.ToVector2());
+            if (confirmPanel.HitTestWorld(worldPos)) return;
+
+            var tilePos = map.WorldToTile(worldPos);
+
+            if(mouse.LeftClicked() || mouse.RightDragging())
+            {
+                buildTargets.Add(tilePos);
+                confirmButtonWorldPos = worldPos;
+            }
+
+            confirmPanel.X = (int)confirmButtonWorldPos.X;
+            confirmPanel.Y = (int)confirmButtonWorldPos.Y;
         }
     }
 }

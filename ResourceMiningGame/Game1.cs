@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using ResourceMiningGame.GameUI;
 using ResourceMiningGame.Input;
 using ResourceMiningGame.Screens;
 using ResourceMiningGame.UI.Core;
@@ -31,6 +32,7 @@ namespace ResourceMiningGame
         {
             // TODO: Add your initialization logic here
             UIElement.Initialize(GraphicsDevice);
+            WorldUIElement.Initialize(GraphicsDevice);
             base.Initialize(); // ベースクラス(親クラス)のInitialize()を実行
         }
 

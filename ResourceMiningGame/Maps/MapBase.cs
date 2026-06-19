@@ -1,5 +1,5 @@
 ﻿
-
+using Point = Microsoft.Xna.Framework.Point;
 using ResourceMiningGame.Core;
 
 namespace ResourceMiningGame.Maps
@@ -38,6 +38,18 @@ namespace ResourceMiningGame.Maps
         public Tiles.Tile GetTile(int x, int y) //指定されたタイルを返す
         {
             return MapTiles[x, y];
+        }
+
+        public Point WorldToTile(Vector2 worldPos)
+        {
+            int tileX = (int)(worldPos.X / TileSize);
+            int tileY = (int)(worldPos.Y / TileSize);
+
+            //範囲外チェック
+            tileX = Math.Clamp(tileX, 0, MapSizeX - 1);
+            tileY = Math.Clamp(tileY, 0, MapSizeY - 1);
+
+            return new Point(tileX, tileY);
         }
 
         public abstract void LoadContent(ContentManager content);
