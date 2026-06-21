@@ -52,6 +52,8 @@ namespace ResourceMiningGame.GameUI
 
         public override void DrawWorld(SpriteBatch sb)
         {
+            if (!Visible) return;
+
             var r = GetWorldRectWorldSpace();
             sb.Draw(whiteTex, r, BackgroundColor);
 

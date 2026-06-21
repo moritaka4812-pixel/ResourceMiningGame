@@ -148,6 +148,7 @@ namespace ResourceMiningGame.Screens
             currentBuildType = type;
             buildTargets.Clear();
             invalidTargets.Clear();
+            confirmPanel.Visible = false;
         }
 
         private void UpdateBuildMode(MouseInput mouse, Camera camera)
@@ -161,6 +162,7 @@ namespace ResourceMiningGame.Screens
             {
                 if (tilePos != null)
                 {
+                    confirmPanel.Visible = true;
                     var tile = mapManager.Map.GetTile(tilePos.Value.X, tilePos.Value.Y);
 
                     var p = tilePos.Value;
@@ -200,16 +202,20 @@ namespace ResourceMiningGame.Screens
                 mapManager.AddBuilding(currentBuildType, tile);
             }
 
+            confirmPanel.Visible = false;
             isBuildMode = false;
             buildTargets.Clear();
             invalidTargets.Clear();
+            toolPanel.ClearActiveButton();
         }
 
         public void CancelBuild()
         {
+            confirmPanel.Visible = false;
             isBuildMode = false;
             buildTargets.Clear();
             invalidTargets.Clear();
+            toolPanel.ClearActiveButton();
         }
     }
 }

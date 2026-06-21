@@ -19,6 +19,8 @@ namespace ResourceMiningGame.UI.Elements
         public bool IsImageButton = false; //テキストボタンか画像ボタンか
         public event Action? OnClicked;
 
+        public bool IsToggle { get; set; } = false;
+
         protected SpriteFont font; //フォントデータ
 
         public Button(GraphicsDevice device, SpriteFont font, Rect rect, string text) //テキスト付きボタン
@@ -88,7 +90,10 @@ namespace ResourceMiningGame.UI.Elements
             //背景
             sb.Draw(whiteTex, Rect, FillColor);
             //ボタンの枠
-            DrawRectangle(sb, Rect, 3, BorderColor);
+            if (IsToggle == false)
+                DrawRectangle(sb, Rect, 3, BorderColor);
+            else
+                DrawRectangle(sb, Rect, 3, Color.Yellow);
 
             if(IsImageButton && Icon != null)
             {
@@ -111,60 +116,6 @@ namespace ResourceMiningGame.UI.Elements
                 sb.DrawString(font, Text, pos, TextColor);
             }
         }
-        /*
-
-        public void DrawAt(SpriteBatch sb, Rect rect) //ワールド座標でのDraw
-        {
-            sb.Draw(whiteTex, rect, NormalFillColor);
-
-            //ボタンの枠
-            DrawRectangle(sb, rect, 3, BorderColor);
-
-            if (font != null && !string.IsNullOrEmpty(Text))
-            {
-                var size = font.MeasureString(Text);
-                var pos = new Vector2(rect.X + (rect.Width - size.X) / 2,
-                                      rect.Y + (rect.Height - size.Y) / 2);
-                sb.DrawString(font, Text, pos, TextColor);
-            }
-        }
-
-        public bool HitTestWorld(Vector2 worldPos, int parentX, int parentY) //ワールド座標でのHitTest
-        {
-            var worldRect = new Rect(
-                parentX + Rect.X,
-                parentY + Rect.Y,
-                Rect.Width,
-                Rect.Height
-                );
-
-            return worldRect.Contains(worldPos);
-        }
-
-        public void OnHoverWorld(Vector2 worldPos, int parentX, int parentY)
-        {
-            var worldRect = new Rect(
-                parentX + Rect.X,
-                parentY + Rect.Y,
-                Rect.Width,
-                Rect.Height
-                );
-
-            bool hover = worldRect.Contains(worldPos);
-
-            if (hover)
-            {
-                FillColor = HoverFillColor;
-                BorderColor = Color.Yellow;
-            }
-            else
-            {
-                FillColor = NormalFillColor;
-                BorderColor = Color.White;
-            }
-
-        }
-        */
 
         public void SetBackgroundColor(Color color) //背景色変更メソッド
         {

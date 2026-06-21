@@ -2,12 +2,13 @@
 using ResourceMiningGame.UI.Core;
 using Point = Microsoft.Xna.Framework.Point;
 using Rect = Microsoft.Xna.Framework.Rectangle;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace ResourceMiningGame.UI.Elements
 {
     public class ScrollMultiList : UIElement
     {
-        private List<UIElement> children = new();
+        public List<UIElement> Children { get; private set; } = new();
         private int scrollY = 0;
 
         //列数(今は固定)
@@ -21,6 +22,9 @@ namespace ResourceMiningGame.UI.Elements
         public int SpacingX { get; set; }
         public int SpacingY { get; set; }
 
+        public Color? BackgroundColor;
+
+
         public ScrollMultiList(int CellWidth = 56, int CellHeight = 56, int SpacingX = 8, int SpacingY = 8)
         {
             this.CellWidth = CellWidth;
@@ -32,7 +36,7 @@ namespace ResourceMiningGame.UI.Elements
         public void Add(UIElement element)
         {
             element.Parent = this;
-            children.Add(element);
+            Children.Add(element);
         }
 
         public override bool OnWheel(MouseInput mouse, int delta)
@@ -50,7 +54,7 @@ namespace ResourceMiningGame.UI.Elements
 
             bool consumed = base.Update(mouse); //ホイール処理などを呼ぶ
 
-            foreach(var child in children)
+            foreach(var child in Children)
             {
                 var localMouse = ConvertToLocal(mouse);
                 consumed |= child.Update(localMouse);
@@ -62,9 +66,12 @@ namespace ResourceMiningGame.UI.Elements
         public override void Draw(SpriteBatch sb)
         {
             if(!Visible) return;
+            if(BackgroundColor != null)
+                sb.Draw(whiteTex, this.Rect, (Color)BackgroundColor);
+
 
             //子要素描画
-            foreach (var child in children)
+            foreach (var child in Children)
                 child.Draw(sb);
 
         }
@@ -76,7 +83,7 @@ namespace ResourceMiningGame.UI.Elements
             //列数を動的に決めたい場合は
             Columns = Math.Max(1, (Rect.Width + SpacingX) / (CellWidth + SpacingX));
 
-            for (int i = 0; i< children.Count; i++)
+            for (int i = 0; i< Children.Count; i++)
             {
                 int row = i / Columns;
                 int col = i % Columns;
@@ -84,16 +91,16 @@ namespace ResourceMiningGame.UI.Elements
                 int x = Rect.X + col * (CellWidth + SpacingX);
                 int y = Rect.Y + row * (CellHeight + SpacingY) - scrollY;
 
-                children[i].X = x;
-                children[i].Y = y;
-                children[i].Width = CellWidth; 
-                children[i].Height = CellHeight;
+                Children[i].X = x;
+                Children[i].Y = y;
+                Children[i].Width = CellWidth; 
+                Children[i].Height = CellHeight;
             }
         }
 
         private int GetMaxScroll() //スクロールできる範囲を求める
         {
-            int rows = (int)Math.Ceiling(children.Count / (float)Columns);
+            int rows = (int)Math.Ceiling(Children.Count / (float)Columns);
             int contentHeight = rows * (CellHeight + SpacingY);
             return Math.Max(0, contentHeight - Rect.Height);
         }

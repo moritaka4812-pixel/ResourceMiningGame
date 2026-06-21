@@ -2,6 +2,7 @@
 using Panel = ResourceMiningGame.UI.Elements.Panel;
 using Button = ResourceMiningGame.UI.Elements.Button;
 using Rect = Microsoft.Xna.Framework.Rectangle;
+using Color = Microsoft.Xna.Framework.Color;
 using ResourceMiningGame.UI.Core;
 using ResourceMiningGame.Input;
 using System.DirectoryServices;
@@ -16,6 +17,7 @@ namespace ResourceMiningGame.GameUI
         private Button handleButton; //取って
         private bool isOpen;
         private float targetX;
+        private Button? activeButton = null;
         float openX;
         float closedX;
 
@@ -41,6 +43,7 @@ namespace ResourceMiningGame.GameUI
             list.RelativeY = 0.15f;
             list.RelativeHeight = 0.7f;
             list.RelativeWidth = 1f;
+            list.BackgroundColor = new Color(30, 30, 30, 200);
 
             AddBuildButton(ui, list, "Buildings/Drill", BuildType.Drill, 32);
 
@@ -54,7 +57,16 @@ namespace ResourceMiningGame.GameUI
         private void AddBuildButton(UIFactory ui, ScrollMultiList list, string label, BuildType type, int size)
         {
             var btn = ui.CreateImageButtonFrame(label, new Rect(0, 0, size, size));
-            btn.OnClicked += () => OnBuildRequested?.Invoke(type);
+            btn.OnClicked += () =>
+            {
+                if(activeButton != null)
+                    activeButton.IsToggle = false;
+
+                btn.IsToggle = true;
+                activeButton = btn;
+
+                OnBuildRequested?.Invoke(type);
+            };
             list.Add(btn);
         }
 
@@ -76,6 +88,16 @@ namespace ResourceMiningGame.GameUI
         public override void Draw(SpriteBatch sb)
         {
             panel.Draw(sb);
+
+        }
+
+        public void ClearActiveButton()
+        {
+            if(activeButton != null)
+            {
+                activeButton.IsToggle = false;
+                activeButton = null;
+            }
         }
     }
 }
