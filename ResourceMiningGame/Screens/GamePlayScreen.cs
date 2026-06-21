@@ -157,41 +157,43 @@ namespace ResourceMiningGame.Screens
             if (confirmPanel.HitTestWorld(worldPos)) return;
 
             var tilePos = mapManager.Map.WorldToTile(worldPos);
+            if (tilePos == null) return;
 
-            if(mouse.LeftClicked() || mouse.RightDragging())
+            var p = tilePos.Value;
+            var tile = mapManager.Map.GetTile(p.X, p.Y);
+
+            //左クリック
+            if (mouse.LeftClicked())
             {
-                if (tilePos != null)
-                {
-                    confirmPanel.Visible = true;
-                    var tile = mapManager.Map.GetTile(tilePos.Value.X, tilePos.Value.Y);
+                HandleBuildTarget(p, tile, worldPos);
+            }
 
-                    var p = tilePos.Value;
-
-                    if (buildTargets.Contains(p))
-                    {
-                        buildTargets.Remove(p); //buildTargetsにすでにある場合
-                    }
-                    else if (invalidTargets.Contains(p))
-                    {
-                        invalidTargets.Remove(p);
-                    }
-                    else
-                    {
-                        if (!tile.IsOccupied && tile.IsBuildable)
-                            buildTargets.Add((Point)tilePos); //buildTargetsに新規追加
-                        else
-                            invalidTargets.Add(p);
-                        confirmButtonWorldPos = new Vector2(worldPos.X + 10, worldPos.Y + 10);
-                    }
-                }
-                else
-                {
-                    confirmButtonWorldPos = worldPos;
-                }
+            //左ドラッグ
+            if(mouse.LeftDragging())
+            {
+                if (!buildTargets.Contains(p) && !invalidTargets.Contains(p)) //連続で同じタイルを追加しない
+                    HandleBuildTarget(p, tile, worldPos);
             }
 
             confirmPanel.X = (int)confirmButtonWorldPos.X;
             confirmPanel.Y = (int)confirmButtonWorldPos.Y;
+        }
+
+        private void HandleBuildTarget(Point p, Tile tile, Vector2 worldPos)
+        {
+            confirmPanel.Visible = true;
+            if (!tile.IsOccupied && tile.IsBuildable)
+                if(buildTargets.Contains(p))
+                    buildTargets.Remove(p);
+
+                 else buildTargets.Add(p);
+            else
+                if(invalidTargets.Contains(p))
+                    invalidTargets.Remove(p);
+
+                else invalidTargets.Add(p);
+
+            confirmButtonWorldPos = new Vector2(worldPos.X + 10, worldPos.Y + 10);
         }
 
         public void ConfirmBuild()

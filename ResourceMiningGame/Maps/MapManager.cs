@@ -31,8 +31,16 @@ namespace ResourceMiningGame.Maps
         {
             tileAnimator.UpdateVisibleTiles(gameTime, camera, device);
             Map.Update(gameTime);
+
+            var range = Map.GetVisibleRange(camera, device);
+
             foreach(var b in Buildings)
-                b.Update(gameTime);
+            {
+                b.UpdateLogic(gameTime);
+
+                if (range.Contains(b.TilePosition))
+                    b.UpdateVisual(gameTime);
+            }
         }
 
         public void Draw(SpriteBatch sb, Camera camera)

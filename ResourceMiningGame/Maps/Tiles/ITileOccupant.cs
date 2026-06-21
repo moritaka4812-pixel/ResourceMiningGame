@@ -8,7 +8,8 @@ namespace ResourceMiningGame.Maps.Tiles
         Point TilePosition { get; }
         Point SizeInTiles { get; }
 
-        void Update(GameTime gameTime);
+        void UpdateLogic(GameTime gameTime);
+        void UpdateVisual(GameTime gameTime);
         void Draw(SpriteBatch sb, Camera camera);
     }
 }

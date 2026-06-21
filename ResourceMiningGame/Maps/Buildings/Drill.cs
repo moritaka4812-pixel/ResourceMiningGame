@@ -10,7 +10,7 @@ namespace ResourceMiningGame.Maps.Buildings
 
         }
 
-        public override void Update(GameTime gameTime)
+        public override void UpdateLogic(GameTime gameTime)
         {
 
         }

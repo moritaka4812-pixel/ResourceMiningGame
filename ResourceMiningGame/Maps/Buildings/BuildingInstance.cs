@@ -27,7 +27,13 @@ namespace ResourceMiningGame.Maps.Buildings
             IsActive = true;
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void UpdateLogic(GameTime gameTime)
+        {
+            if(!IsActive) return;
+            
+        }
+
+        public virtual void UpdateVisual(GameTime gameTime)
         {
             if(!IsActive) return;
             Anim.Update(gameTime);
