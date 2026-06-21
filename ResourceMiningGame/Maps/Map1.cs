@@ -22,6 +22,11 @@ namespace ResourceMiningGame.Maps
                 {
                     TileType terrain = TileType.stone;
 
+                    // 外周を Blocked にする
+                    if (x == 0 || y == 0 || x == MapSizeX - 1 || y == MapSizeY - 1)
+                        terrain = TileType.blockedStone;   // ← 新しい地形タイプ
+                    else
+                        terrain = TileType.stone;
                     //資源生成
                     ResourceType resource = 
                         (x + y) % 3 == 0 ? ResourceType.Copper : ResourceType.None;

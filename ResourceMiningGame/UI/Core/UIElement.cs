@@ -53,6 +53,14 @@ namespace ResourceMiningGame.UI.Core
         public virtual bool OnHover(MouseInput mouse) { return false; }
         //ホバー解除用
         public virtual void OnHoverExit() {}
+        // 外部に操作を伝えるイベント
+        public event Action? LeftClicked;
+        public event Action? RightClicked;
+        public event Action? MiddleClicked;
+        public event Action? Hovered;
+        public event Action? HoveredExited;
+        public event Action<int>? WheelScrolled;
+        public event Action<Point>? Dragged;
 
         public static void Initialize(GraphicsDevice device)
         {
@@ -111,6 +119,7 @@ namespace ResourceMiningGame.UI.Core
             //左クリック
             if (hit && mouse.LeftClicked())
             {
+                LeftClicked?.Invoke();
                 if(OnLeftClickHandler != null) //左クリックの代替デリゲード処理があれば
                     consumed |= OnLeftClickHandler(mouse);
                 
@@ -121,27 +130,34 @@ namespace ResourceMiningGame.UI.Core
             //右クリック
             if (hit && mouse.RightClicked())
             {
+                RightClicked?.Invoke(); 
                 if(OnRightClickHandler != null) //右クリックの代替デリゲード処理があれば
                     consumed |= OnRightClickHandler(mouse);
 
                 else
                     consumed |= OnRightClick(mouse);
+
+                
             }
 
             //中クリック
             if (hit && mouse.MiddleClicked())
             {
+                MiddleClicked?.Invoke();
                 if (OnMiddleClickHandler != null) //中クリックの代替デリゲード処理があれば
                     consumed |= OnMiddleClickHandler(mouse);
 
                 else
                     consumed |= OnMiddleClick(mouse);
+
+                
             }
 
             //ホイール
             int wheel = mouse.ScrollDelta();
             if(wheel != 0 && hit)
             {
+                WheelScrolled?.Invoke(wheel);
                 if (OnWheelHandler != null) //ホイールの代替デリゲード処理があれば
                     consumed |= OnWheelHandler(mouse, wheel);
 
@@ -152,18 +168,42 @@ namespace ResourceMiningGame.UI.Core
             //ホバー
             if (hit)
             {
+                Hovered?.Invoke();
                 if (OnHoverHandler != null)
                     consumed |= OnHoverHandler(mouse);
 
                 else
                     consumed |= OnHover(mouse);
+
+                
             }
             else
             {
+                HoveredExited?.Invoke();
                 OnHoverExit();
             }
 
             return consumed;
+        }
+
+        protected void RaiseLeftClicked()
+        {
+            LeftClicked?.Invoke();
+        }
+
+        protected void RaiseRightClicked()
+        {
+            RightClicked?.Invoke();
+        }
+
+        protected void RaiseMiddleClicked()
+        {
+            MiddleClicked?.Invoke();
+        }
+
+        protected void RaiseWheelScrolled(int wheel)
+        {
+            WheelScrolled?.Invoke(wheel);
         }
 
         public virtual bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse)

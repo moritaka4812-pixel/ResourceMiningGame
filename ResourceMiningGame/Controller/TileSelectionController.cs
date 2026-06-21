@@ -22,13 +22,12 @@ namespace ResourceMiningGame.Controller
             Matrix inverse = Matrix.Invert(camera.GetViewMatrix()); //カメラの逆行列を取得
             Vector2 worldPos = Vector2.Transform(screenPos, inverse); //スクリーン座標からワールド座標に変換
 
-            int tileX = (int)(worldPos.X / 32); //タイル座標に変換
-            int tileY = (int)(worldPos.Y / 32);
+            var tilePos = map.WorldToTile(worldPos);
 
-            if (tileX < 0 || tileX >= map.MapSizeX || tileY < 0 || tileY >= map.MapSizeY) //マップの範囲外
+            if (tilePos == null) //マップの範囲外
                 return new TileSelectionResult(TileSelectionResultType.Outside, null);
 
-            return new TileSelectionResult(TileSelectionResultType.Selected, map.GetTile(tileX, tileY));
+            return new TileSelectionResult(TileSelectionResultType.Selected, map.GetTile(tilePos.Value.X, tilePos.Value.Y));
         }
     }
 }

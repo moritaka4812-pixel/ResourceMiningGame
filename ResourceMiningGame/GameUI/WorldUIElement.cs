@@ -42,6 +42,14 @@ namespace ResourceMiningGame.GameUI
         public virtual bool OnDrag(MouseInput mouse, Point delta) { return false; }
         public virtual bool OnHover(MouseInput mouse) { return false; }
         public virtual void OnHoverExit() { }
+        // 外部に操作を伝えるイベント
+        public event Action? LeftClicked;
+        public event Action? RightClicked;
+        public event Action? MiddleClicked;
+        public event Action? Hovered;
+        public event Action? HoveredExited;
+        public event Action<int>? WheelScrolled;
+        public event Action<Point>? Dragged;
 
         public WorldUIElement(Camera camera)
         {
@@ -91,6 +99,7 @@ namespace ResourceMiningGame.GameUI
             // 左クリック
             if (hit && mouse.LeftClicked())
             {
+                LeftClicked?.Invoke();
                 if (OnLeftClickHandler != null)
                     consumed |= OnLeftClickHandler(mouse);
                 else
@@ -100,6 +109,7 @@ namespace ResourceMiningGame.GameUI
             // 右クリック
             if (hit && mouse.RightClicked())
             {
+                RightClicked?.Invoke();
                 if (OnRightClickHandler != null)
                     consumed |= OnRightClickHandler(mouse);
                 else
@@ -109,6 +119,7 @@ namespace ResourceMiningGame.GameUI
             // 中クリック
             if (hit && mouse.MiddleClicked())
             {
+                MiddleClicked?.Invoke();
                 if (OnMiddleClickHandler != null)
                     consumed |= OnMiddleClickHandler(mouse);
                 else
@@ -119,6 +130,7 @@ namespace ResourceMiningGame.GameUI
             int wheel = mouse.ScrollDelta();
             if (wheel != 0 && hit)
             {
+                WheelScrolled?.Invoke(wheel);
                 if (OnWheelHandler != null)
                     consumed |= OnWheelHandler(mouse, wheel);
                 else
@@ -132,6 +144,7 @@ namespace ResourceMiningGame.GameUI
             // ホバー
             if (hit)
             {
+                Hovered?.Invoke();
                 if (OnHoverHandler != null)
                     consumed |= OnHoverHandler(mouse);
                 else
@@ -139,10 +152,31 @@ namespace ResourceMiningGame.GameUI
             }
             else
             {
+                HoveredExited?.Invoke();
                 OnHoverExit();
             }
 
             return consumed;
+        }
+
+        protected void RaiseLeftClicked()
+        {
+            LeftClicked?.Invoke();
+        }
+
+        protected void RaiseRightClicked()
+        {
+            RightClicked?.Invoke();
+        }
+
+        protected void RaiseMiddleClicked()
+        {
+            MiddleClicked?.Invoke();
+        }
+
+        protected void RaiseWheelScrolled(int wheel)
+        {
+            WheelScrolled?.Invoke(wheel);
         }
 
         // ワールド座標で描画

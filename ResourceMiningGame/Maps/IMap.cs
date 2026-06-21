@@ -17,6 +17,6 @@ namespace ResourceMiningGame.Maps
         
         VisibleTileRange GetVisibleRange(Camera camera, GraphicsDevice graphics); //ワールド座標上のカメラ範囲を返す
 
-        public Point WorldToTile(Vector2 worldPos);
+        public Point? WorldToTile(Vector2 worldPos);
     }
 }

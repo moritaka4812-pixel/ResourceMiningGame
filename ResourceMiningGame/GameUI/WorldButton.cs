@@ -37,25 +37,36 @@ namespace ResourceMiningGame.GameUI
             BorderColor = Color.White;
         }
 
+        public override bool OnLeftClick(MouseInput mouse)
+        {
+            return true;
+        }
+
         public override bool UpdateWorld(MouseInput mouse)
         {
             var worldPos = Camera.ScreenToWorld(mouse.Current.Position.ToVector2()); 
-            var r = GetWorldRectWorldSpace(); 
+            var r = GetWorldRectWorldSpace();
+            bool hit = r.Contains(worldPos);
+            bool consumed = false;
 
-            if (r.Contains(worldPos))
-            {
+            //ホバー
+            if (hit)
                 OnHoverWorld(worldPos);
-                if (mouse.LeftClicked())
-                {
-                    OnLeftClick(mouse);
-                    return true;
-                }
-            }
-            else
-            {
+            else 
                 OnHoverExit();
+
+            //左クリック
+            if(hit && mouse.LeftClicked())
+            {
+                RaiseLeftClicked();
+
+                if (OnLeftClickHandler != null)
+                    consumed |= OnLeftClickHandler(mouse);
+                else
+                    consumed |= OnLeftClick(mouse);
             }
-            return false;
+
+            return consumed;
         }
 
 

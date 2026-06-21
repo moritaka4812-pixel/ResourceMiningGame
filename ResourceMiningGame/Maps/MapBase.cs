@@ -40,14 +40,15 @@ namespace ResourceMiningGame.Maps
             return MapTiles[x, y];
         }
 
-        public Point WorldToTile(Vector2 worldPos)
+        public Point? WorldToTile(Vector2 worldPos)
         {
             int tileX = (int)(worldPos.X / TileSize);
             int tileY = (int)(worldPos.Y / TileSize);
 
             //範囲外チェック
-            tileX = Math.Clamp(tileX, 0, MapSizeX - 1);
-            tileY = Math.Clamp(tileY, 0, MapSizeY - 1);
+            if (tileX < 0 || tileX >= MapSizeX ||
+                tileY < 0 || tileY >= MapSizeY)
+                return null;
 
             return new Point(tileX, tileY);
         }

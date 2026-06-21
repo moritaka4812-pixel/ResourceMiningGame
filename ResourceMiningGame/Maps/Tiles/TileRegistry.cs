@@ -34,6 +34,15 @@ namespace ResourceMiningGame.Maps.Tiles
                     FrameCount = 1,
                     FrameTime = 0f
                 }
+            },
+            {
+                    TileType.blockedStone,
+                    new TileAnimationInfo()
+                    {
+                        TexturePath = "TileUI/stone",
+                        FrameCount = 1,
+                        FrameTime = 0f
+                    }
             }
             };
     }

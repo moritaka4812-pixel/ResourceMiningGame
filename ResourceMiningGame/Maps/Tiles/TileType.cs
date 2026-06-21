@@ -5,6 +5,7 @@ namespace ResourceMiningGame.Maps.Tiles
     {
         Ground,
         Road,
-        stone
+        stone,
+        blockedStone
     }
 }

@@ -16,8 +16,8 @@ namespace ResourceMiningGame.Maps.Tiles
                 new TileAnimationInfo
                 {
                     TexturePath = "Resource/copper",
-                    FrameCount = 8,
-                    FrameTime = 0.25f
+                    FrameCount = 1,
+                    FrameTime = 0f
                 }
             }
             };

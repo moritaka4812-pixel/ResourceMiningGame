@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using ResourceMiningGame.GameUI;
 using ResourceMiningGame.Input;
+using ResourceMiningGame.Maps.Tiles;
 using ResourceMiningGame.Screens;
 using ResourceMiningGame.UI.Core;
 using Rect = Microsoft.Xna.Framework.Rectangle;
@@ -34,6 +35,7 @@ namespace ResourceMiningGame
             UIElement.Initialize(GraphicsDevice);
             WorldUIElement.Initialize(GraphicsDevice);
             ContentLoader.Initialize(Content);
+            Tile.Initialize(GraphicsDevice);
             base.Initialize(); // ベースクラス(親クラス)のInitialize()を実行
         }
 

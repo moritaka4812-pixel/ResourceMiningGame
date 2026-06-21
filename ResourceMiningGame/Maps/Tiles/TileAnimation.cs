@@ -45,5 +45,17 @@ namespace ResourceMiningGame.Maps.Tiles
                 );
             sb.Draw(Texture, pos, src, Color.White);
         }
+
+        public void Draw(SpriteBatch sb, Vector2 pos, Color color) //プレビュー用表示
+        {
+            var src = new Rect(
+                currentFrame * FrameWidth,
+                0,
+                FrameWidth,
+                FrameHeight
+                );
+
+            sb.Draw(Texture, pos, src, color);
+        }
     }
 }

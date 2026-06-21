@@ -9,9 +9,17 @@ namespace ResourceMiningGame.Maps.Tiles
         public ResourceType Resource;
         public bool IsBuildable; //建設可能かどうか
         public Vector2 Position; //タイルの位置（ワールド座標）
+        public ITileOccupant? Occupant; //建物やユニットなど
+
+        public bool IsOccupied => Occupant != null;
+
 
         public TileAnimation TerrainAnim;
         public TileAnimation ResourceAnim;
+
+        public static Texture2D BlockedTex;
+        protected static Texture2D whiteTex;
+        protected static Texture2D blackTex;
 
 
         public Tile(TileType Type,
@@ -27,6 +35,17 @@ namespace ResourceMiningGame.Maps.Tiles
             ResourceAnim = ResourceRegistry.Resources[resource]?.CreateTileAnimation();
         }
 
+        public static void Initialize(GraphicsDevice device)
+        {
+            whiteTex = new Texture2D(device, 1, 1); //白テクスチャをセット
+            whiteTex.SetData(new[] { Color.White });
+
+            blackTex = new Texture2D(device, 1, 1);
+            blackTex.SetData(new[] { Color.Black });
+
+            BlockedTex = ContentLoader.LoadTexture("TileUI/blocked");
+        }
+
         public void Update(GameTime gameTime)
         {
             TerrainAnim?.Update(gameTime);
@@ -38,6 +57,11 @@ namespace ResourceMiningGame.Maps.Tiles
             TerrainAnim?.Draw(sb, Position);
             ResourceAnim?.Draw(sb, Position);
 
+            if (!IsBuildable)
+            {
+                sb.Draw(BlockedTex, Position, Color.White);
+                sb.Draw(blackTex, new Rectangle((int)Position.X, (int)Position.Y + 28, 32, 4), Color.Black * 0.4f);
+            }
         }
 
     }

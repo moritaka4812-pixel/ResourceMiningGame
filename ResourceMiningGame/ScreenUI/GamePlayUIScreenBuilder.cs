@@ -43,6 +43,9 @@ namespace ResourceMiningGame.ScreenUI
             var okButton = worldui.CreateWorldTextButton("o", 0, 0, 40, 40);
             var cancelButton = worldui.CreateWorldTextButton("x", 40, 0, 40, 40);
 
+            okButton.LeftClicked += () => screen.ConfirmBuild();
+            cancelButton.LeftClicked += () => screen.CancelBuild();
+
             confirmPanel.AddChild(okButton);
             confirmPanel.AddChild(cancelButton);
 
