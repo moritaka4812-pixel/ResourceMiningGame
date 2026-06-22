@@ -6,7 +6,9 @@ using ResourceMiningGame.Maps;
 using ResourceMiningGame.Input;
 using ResourceMiningGame.Core;
 using ResourceMiningGame.Maps.Tiles;
+using ResourceMiningGame.Maps.Buildings;
 using ResourceMiningGame.Screens;
+using System.ComponentModel.DataAnnotations;
 
 namespace ResourceMiningGame.Controller
 {
@@ -24,6 +26,8 @@ namespace ResourceMiningGame.Controller
         private bool[,] previewOccupied;
         private List<Point>[,] previewOwner;
         private Vector2 confirmButtonWorldPos;
+        private BuildPlacementValidator validator;
+        private Point? lastDragOrigin = null;
 
         public WorldPanel confirmPanel;
 
@@ -58,6 +62,8 @@ namespace ResourceMiningGame.Controller
             for (int x = 0; x < mapManager.Map.MapSizeX; x++)
                 for (int y = 0; y < mapManager.Map.MapSizeY; y++)
                     previewOwner[x, y] = new List<Point>();
+
+            validator = new BuildPlacementValidator(mapManager.Map, previewOccupied);
         }
 
         public void Cancel()
@@ -103,8 +109,26 @@ namespace ResourceMiningGame.Controller
             //左ドラッグ
             if (mouse.LeftDragging())
             {
-                if (!buildTargets.Contains(p) && !invalidTargets.Contains(p)) //連続で同じタイルを追加しない
-                    HandleBuildTarget(p, tile, worldPos);
+                if(lastDragOrigin != p && //前のタイルと別のタイルをドラッグしている
+                    !buildTargets.Contains(p) && //BuildTargetに含まれない
+                    !invalidTargets.Contains(p)) //InvalidTargetにも含まれない
+                {
+                    bool canPlace = validator.CanPlace(BuildingRegistry.Data[currentBuildType], p); //配置が可能か
+
+                    if (canPlace)
+                    {
+                        HandleBuildTarget(p, tile, worldPos);
+                        lastDragOrigin = p; //ドラッグの前タイルを格納
+                    }
+                    else
+                    {
+                        lastDragOrigin = p; //追加するタイルではなかったが前タイルは格納
+                    }
+                }
+            }
+            else
+            {
+                lastDragOrigin = null; //マウス右ドラッグされていないならドラッグの前タイルはなし
             }
 
             confirmPanel.X = (int)confirmButtonWorldPos.X;
@@ -147,36 +171,7 @@ namespace ResourceMiningGame.Controller
             }
 
             //以下新規追加の処理
-            List<Point> area = new(); //各占有タイルの位置を格納
-            for (int x = 0; x < info.SizeInTiles.X; x++)
-            {
-                for (int y = 0; y < info.SizeInTiles.Y; y++)
-                {
-                    area.Add(new Point(p.X + x, p.Y + y));
-                }
-            }
-
-            //実マップの判定
-            bool canPlace = true;
-            foreach (var pos in area)
-            {
-                var t = mapManager.Map.GetTile(pos.X, pos.Y);
-                if (t == null || t.IsOccupied || !t.IsBuildable) //建設不可の条件
-                {
-                    canPlace = false;
-                    break;
-                }
-            }
-
-            //プレビュー内の重複判定
-            foreach (var pos in area)
-            {
-                if (previewOccupied[pos.X, pos.Y]) //プレビューで重複
-                {
-                    canPlace = false;
-                    break;
-                }
-            }
+            bool canPlace = validator.CanPlace(info, p); //タイルが設置可能かを判定
 
             if (canPlace) //建設可能
                 buildTargets.Add(p);
@@ -184,7 +179,7 @@ namespace ResourceMiningGame.Controller
                 invalidTargets.Add(p);
 
             //仮想マップに追加
-            foreach (var pos in area)
+            foreach (var pos in info.GetArea(p))
             {
                 previewOccupied[pos.X, pos.Y] = true;
                 previewOwner[pos.X, pos.Y].Add(p);

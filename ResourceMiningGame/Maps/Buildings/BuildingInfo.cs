@@ -20,5 +20,12 @@ namespace ResourceMiningGame.Maps.Buildings
             var tex = ContentLoader.LoadTexture(TexturePath);
             return new TileAnimation(tex, FrameCount, tex.Width / FrameCount, tex.Height, FrameTime);
         }
+
+        public IEnumerable<Point> GetArea(Point origin)
+        {
+            for(int x = 0; x < SizeInTiles.X; x++)
+                for(int y = 0; y < SizeInTiles.Y; y++)
+                    yield return new Point(origin.X + x, origin.Y + y);
+        }
     }
 }
