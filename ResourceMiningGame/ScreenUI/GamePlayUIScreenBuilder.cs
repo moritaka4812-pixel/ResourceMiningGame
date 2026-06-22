@@ -25,7 +25,7 @@ namespace ResourceMiningGame.ScreenUI
             this.worldui = new WorldUIFactory(game, camera);
         }
 
-        public (Button settingsButton, ToolPanel toolPanel, WorldPanel confirmPanel) BuildUI() //GamePlayScreenのUI
+        public (Button settingsButton, ToolPanel toolPanel) BuildUI() //GamePlayScreenのUI
         {
             var settingsButton = ui.CreateImageButton("UI/gear", 760, 20, 32, 32);
             settingsButton.SetBackgroundColor(Color.White);
@@ -36,20 +36,9 @@ namespace ResourceMiningGame.ScreenUI
 
             var toolPanel = new ToolPanel(ui);
 
-            toolPanel.OnBuildRequested += (type) => screen.EnterBuildMode(type);
+            toolPanel.OnBuildRequested += (type) => screen.buildModeController.Start(type);
 
-            var confirmPanel = worldui.CreateWorldPanel(80, 40);
-
-            var okButton = worldui.CreateWorldTextButton("o", 0, 0, 40, 40);
-            var cancelButton = worldui.CreateWorldTextButton("x", 40, 0, 40, 40);
-
-            okButton.LeftClicked += () => screen.ConfirmBuild();
-            cancelButton.LeftClicked += () => screen.CancelBuild();
-
-            confirmPanel.AddChild(okButton);
-            confirmPanel.AddChild(cancelButton);
-
-            return (settingsButton, toolPanel, confirmPanel);
+            return (settingsButton, toolPanel);
         }
     }
 }
