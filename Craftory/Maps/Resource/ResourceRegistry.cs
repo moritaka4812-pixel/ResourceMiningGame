@@ -1,6 +1,6 @@
-﻿
+﻿using Craftory.Maps.Tiles;
 
-namespace Craftory.Maps.Tiles
+namespace Craftory.Maps.Resource
 {
     public static class ResourceRegistry
     {

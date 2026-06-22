@@ -3,6 +3,7 @@ using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Craftory.Maps.Tiles;
 using Craftory.Maps.Shadow;
+using Craftory.Maps.Resource;
 
 namespace Craftory.Maps
 {

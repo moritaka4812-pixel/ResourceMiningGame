@@ -1,5 +1,4 @@
-﻿
-namespace Craftory.Maps.Tiles
+﻿namespace Craftory.Maps.Resource
 {
     public enum ResourceType
     {

@@ -1,6 +1,7 @@
 ﻿using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Color = Microsoft.Xna.Framework.Color;
 using Craftory.Maps.Shadow;
+using Craftory.Maps.Resource;
 
 namespace Craftory.Maps.Tiles
 {

@@ -14,7 +14,7 @@ namespace Craftory.Maps
         private TileAnimator tileAnimator;
         public MapShadowGenerator shadowGenerator {  get; private set; }
 
-        public MapManager(IMap map, GraphicsDevice graphics)
+        public void MapSet(IMap map, GraphicsDevice graphics)
         {
             Map = map;
             Buildings = new();

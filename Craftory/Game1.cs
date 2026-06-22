@@ -5,6 +5,7 @@ using Craftory.Maps.Tiles;
 using Craftory.Screens;
 using Craftory.UI.Core;
 using Rect = Microsoft.Xna.Framework.Rectangle;
+using Craftory.Core;
 
 namespace Craftory
 {
@@ -14,6 +15,8 @@ namespace Craftory
         private SpriteBatch _spriteBatch; //テキストとイメージを描画
         private Stack<ScreenBase> screens = new Stack<ScreenBase>(); //表示する画面のスタック
         public InputManager Input { get; private set; } //入力の状態を管理
+
+        public GameCore Core { get; private set; }
 
         public Game1()
         {
@@ -36,6 +39,7 @@ namespace Craftory
             WorldUIElement.Initialize(GraphicsDevice);
             ContentLoader.Initialize(Content);
             Tile.Initialize(GraphicsDevice);
+            Core = new GameCore();
             base.Initialize(); // ベースクラス(親クラス)のInitialize()を実行
         }
 

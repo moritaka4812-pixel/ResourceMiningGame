@@ -32,7 +32,6 @@ namespace Craftory.Screens
         TileSelectionController tileSelectionController; //タイル選択を処理
         TileSelectionSystem tileSelectionSystem;
         TileSelectionRenderer tileSelectionRenderer;
-        MapManager mapManager; //マップ情報などを管理
         Button settingsButton; //セッティングボタン
         ToolPanel toolPanel; //左に表示されるツールパネル
         public BuildModeController buildModeController;
@@ -42,8 +41,8 @@ namespace Craftory.Screens
             camera = new Camera(new Vector2(0f, 0f), game); //カメラの初期位置
             cameraController = new CameraController();
             cameraSystem = new CameraSystem(camera, cameraController);
-            mapManager = new MapManager(new Map1(), game.GraphicsDevice);
-            tileSelectionController = new TileSelectionController(mapManager.Map);
+            game.Core.MapManager.MapSet(new Map1(), game.GraphicsDevice);
+            tileSelectionController = new TileSelectionController(game.Core.MapManager.Map);
             tileSelectionSystem = new TileSelectionSystem(tileSelectionController);
             tileSelectionRenderer = new TileSelectionRenderer(game.GraphicsDevice);
             uiSet = new SetUIElements();
@@ -53,12 +52,12 @@ namespace Craftory.Screens
         public override void LoadContent()
         {
             var ui = new UIFactory(game); //UIを生成するインスタンス
-            mapManager.Map.LoadContent(game.Content); //マップをロード
+            game.Core.MapManager.Map.LoadContent(game.Content); //マップをロード
 
             var builder = new GamePlayUIScreenBuilder(game, this, camera);
             (settingsButton, toolPanel) = builder.BuildUI();
 
-            buildModeController = new BuildModeController(mapManager, toolPanel, game, camera, this);
+            buildModeController = new BuildModeController(game.Core.MapManager, toolPanel, game, camera, this);
 
             uiSet.Add(settingsButton);
 
@@ -93,7 +92,7 @@ namespace Craftory.Screens
                 tileSelectionSystem.Update(game.Input.Mouse, camera);
 
             //タイル更新(アニメーション)
-            mapManager.Update(gameTime, camera, game.GraphicsDevice);
+            game.Core.MapManager.Update(gameTime, camera, game.GraphicsDevice);
 
         }
 
@@ -102,8 +101,8 @@ namespace Craftory.Screens
             //ワールド座標での描画
             sb.Begin(transformMatrix: camera.GetViewMatrix()); //描画座標を指定してDrawをワールド座標基準で描画できるようにする
             
-            var range = mapManager.Map.GetVisibleRange(camera, game.GraphicsDevice); //描画範囲内のレンジを取得
-            mapManager.Draw(sb, camera); //範囲内のマップをDraw
+            var range = game.Core.MapManager.Map.GetVisibleRange(camera, game.GraphicsDevice); //描画範囲内のレンジを取得
+            game.Core.MapManager.Draw(sb, camera); //範囲内のマップをDraw
 
             // 選択タイルのハイライト
             tileSelectionRenderer.Draw(sb, tileSelectionSystem.SelectedTile);
