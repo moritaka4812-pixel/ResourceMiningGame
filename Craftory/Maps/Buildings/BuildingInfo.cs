@@ -1,7 +1,7 @@
-﻿using ResourceMiningGame.Maps.Tiles;
+﻿using Craftory.Maps.Tiles;
 using Point = Microsoft.Xna.Framework.Point;
 
-namespace ResourceMiningGame.Maps.Buildings
+namespace Craftory.Maps.Buildings
 {
     public class BuildingInfo
     {

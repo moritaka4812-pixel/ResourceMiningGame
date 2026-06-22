@@ -1,16 +1,16 @@
 ﻿using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
-using ResourceMiningGame.Maps.Buildings;
-using ResourceMiningGame.GameUI;
-using ResourceMiningGame.Maps;
-using ResourceMiningGame.Input;
-using ResourceMiningGame.Core;
-using ResourceMiningGame.Maps.Tiles;
-using ResourceMiningGame.Maps.Buildings;
-using ResourceMiningGame.Screens;
+using Craftory.Maps.Buildings;
+using Craftory.GameUI;
+using Craftory.Maps;
+using Craftory.Input;
+using Craftory.Core;
+using Craftory.Maps.Tiles;
+using Craftory.Maps.Buildings;
+using Craftory.Screens;
 using System.ComponentModel.DataAnnotations;
 
-namespace ResourceMiningGame.Controller
+namespace Craftory.Controller
 {
     public class BuildModeController
     {
