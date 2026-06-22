@@ -29,6 +29,8 @@ namespace ResourceMiningGame.Screens
         private List<Point> invalidTargets = new(); //建設不可の一時リスト
         private Vector2 confirmButtonWorldPos; //建設を決定するかのボタン位置
         private BuildType currentBuildType = BuildType.None; //現在の建設モードでの建設する建物
+        bool[,] previewOccupied; //プレビューでの占有マップ
+        List<Point>[,] previewOwner; //占有タイルからorigin
         private WorldPanel confirmPanel; //確認ボタンをのせるPanel
         public Tile selectedTile = null; //選択したタイルを格納
         Camera camera; //画面表示用のカメラ
@@ -115,15 +117,15 @@ namespace ResourceMiningGame.Screens
                 var info = BuildingRegistry.Data[currentBuildType];
                 var previewAnim = info.CreateTileAnimation();
 
-                foreach (var tile in buildTargets)
+                foreach (var origin in buildTargets)
                 {
-                    Vector2 worldPos = new Vector2(tile.X * 32, tile.Y * 32);
+                    Vector2 worldPos = new Vector2(origin.X * 32, origin.Y * 32);
 
                     previewAnim.Draw(sb, worldPos, Color.White * 0.5f);
                 }
-                foreach(var tile in invalidTargets)
+                foreach(var origin in invalidTargets)
                 {
-                    Vector2 worldPos = new Vector2(tile.X * 32, tile.Y * 32);
+                    Vector2 worldPos = new Vector2(origin.X * 32, origin.Y * 32);
 
                     previewAnim.Draw(sb, worldPos, Color.Red * 0.4f);
                 }
@@ -149,6 +151,11 @@ namespace ResourceMiningGame.Screens
             buildTargets.Clear();
             invalidTargets.Clear();
             confirmPanel.Visible = false;
+            previewOccupied = new bool[mapManager.Map.MapSizeX, mapManager.Map.MapSizeY];
+            previewOwner = new List<Point>[mapManager.Map.MapSizeX, mapManager.Map.MapSizeY];
+            for (int x = 0; x < mapManager.Map.MapSizeX; x++)
+                for (int y = 0; y < mapManager.Map.MapSizeY; y++)
+                    previewOwner[x, y] = new List<Point>();
         }
 
         private void UpdateBuildMode(MouseInput mouse, Camera camera)
@@ -182,18 +189,82 @@ namespace ResourceMiningGame.Screens
         private void HandleBuildTarget(Point p, Tile tile, Vector2 worldPos)
         {
             confirmPanel.Visible = true;
-            if (!tile.IsOccupied && tile.IsBuildable)
-                if(buildTargets.Contains(p))
-                    buildTargets.Remove(p);
+            var info = BuildingRegistry.Data[currentBuildType];
 
-                 else buildTargets.Add(p);
-            else
-                if(invalidTargets.Contains(p))
-                    invalidTargets.Remove(p);
+            // pが既存のプレビュー建物の占有タイルか
+            var owners = previewOwner[p.X, p.Y];
+            if (owners.Count > 0)
+            {
+                //最後に追加された建物を優先して消去
+                var origin = owners.Last();
+                RemovePreviewBuilding(origin, info);
+                return;
+            }
 
-                else invalidTargets.Add(p);
+            //以下新規追加の処理
+            List<Point> area = new();
+            for (int x = 0; x < info.SizeInTiles.X; x++)
+            {
+                for (int y = 0; y < info.SizeInTiles.Y; y++)
+                {
+                    area.Add(new Point(p.X + x, p.Y + y));
+                }
+            }
 
-            confirmButtonWorldPos = new Vector2(worldPos.X + 10, worldPos.Y + 10);
+            //実マップの判定
+            bool canPlace = true;
+            foreach(var pos in area)
+            {
+                var t = mapManager.Map.GetTile(pos.X, pos.Y);
+                if(t == null || t.IsOccupied || !t.IsBuildable)
+                {
+                    canPlace = false;
+                    break;
+                }
+            }
+
+            //プレビュー内の重複判定
+            foreach(var pos in area)
+            {
+                if (previewOccupied[pos.X, pos.Y])
+                {
+                    canPlace = false;
+                    break;
+                }
+            }
+
+            if (canPlace)
+                buildTargets.Add(p);
+            else 
+                invalidTargets.Add(p);
+
+            //仮想マップに追加
+            foreach(var pos in area)
+            {
+                previewOccupied[pos.X, pos.Y] = true;
+                previewOwner[pos.X, pos.Y].Add(p);
+            }
+
+            confirmButtonWorldPos = worldPos + new Vector2(10, 10);
+        }
+
+        private void RemovePreviewBuilding(Point origin, BuildingInfo info)
+        {
+            buildTargets.Remove(origin);
+            invalidTargets.Remove(origin);
+
+            for(int x = 0; x < info.SizeInTiles.X; x++)
+            {
+                for(int y = 0; y < info.SizeInTiles.Y; y++)
+                {
+                    var pos = new Point(origin.X + x, origin.Y + y);
+
+                    previewOwner[pos.X, pos.Y].Remove(origin);
+
+                    //他の建物が残っていればoccupiedのまま
+                    previewOccupied[pos.X, pos.Y] = previewOwner[pos.X, pos.Y].Count > 0;
+                }
+            }
         }
 
         public void ConfirmBuild()

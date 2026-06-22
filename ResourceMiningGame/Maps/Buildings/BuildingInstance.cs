@@ -11,6 +11,7 @@ namespace ResourceMiningGame.Maps.Buildings
         public Point SizeInTiles { get; private set; }  //タイル単位の大きさ
         public bool IsActive { get; private set; }      //稼働状況
         public float WorkSpeed { get; private set; }    //採掘速度など、タイプ依存の性能値
+        public List<Point> OccupiedTiles { get; private set; }
         public TileAnimation Anim;
 
         public BuildingInstance(BuildType type, Point tilePosition)
@@ -25,6 +26,15 @@ namespace ResourceMiningGame.Maps.Buildings
             SizeInTiles = info.SizeInTiles;
             WorkSpeed = info.WorkSpeed;
             IsActive = true;
+
+            OccupiedTiles = new List<Point>();
+            for(int x = 0; x < info.Width; x++)
+            {
+                for(int y = 0; y < info.Height; y++)
+                {
+                    OccupiedTiles.Add(new Point(tilePosition.X + x, tilePosition.Y + y));
+                }
+            }
         }
 
         public virtual void UpdateLogic(GameTime gameTime)

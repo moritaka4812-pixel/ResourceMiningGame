@@ -22,8 +22,13 @@ namespace ResourceMiningGame.Maps
         public void AddBuilding(BuildType type, Point tilePos)
         {
             var building = new BuildingInstance(type, tilePos);
-            var tile = Map.GetTile(tilePos.X, tilePos.Y);
-            tile.Occupant = building;
+            
+            foreach(var pos in building.OccupiedTiles)
+            {
+                var tile = Map.GetTile(pos.X, pos.Y);
+                tile.Occupant = building;
+            }
+
             Buildings.Add(building);
         }
 
