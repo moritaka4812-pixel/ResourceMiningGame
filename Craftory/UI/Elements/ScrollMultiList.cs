@@ -80,23 +80,24 @@ namespace Craftory.UI.Elements
         {
             base.RecalculateLayout();
 
-            //列数を動的に決めたい場合は
             Columns = Math.Max(1, (Rect.Width + SpacingX) / (CellWidth + SpacingX));
 
-            for (int i = 0; i< Children.Count; i++)
+            for (int i = 0; i < Children.Count; i++)
             {
                 int row = i / Columns;
                 int col = i % Columns;
 
-                int x = Rect.X + col * (CellWidth + SpacingX);
-                int y = Rect.Y + row * (CellHeight + SpacingY) - scrollY;
+                // ★ ローカル座標で配置する
+                int x = col * (CellWidth + SpacingX);
+                int y = row * (CellHeight + SpacingY) - scrollY;
 
                 Children[i].X = x;
                 Children[i].Y = y;
-                Children[i].Width = CellWidth; 
+                Children[i].Width = CellWidth;
                 Children[i].Height = CellHeight;
             }
         }
+
 
         private int GetMaxScroll() //スクロールできる範囲を求める
         {

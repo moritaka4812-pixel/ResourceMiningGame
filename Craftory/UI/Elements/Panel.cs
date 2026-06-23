@@ -77,10 +77,13 @@ namespace Craftory.UI.Elements
         {
             if (!Visible) return;
 
-            //背景
+            // 背景
             sb.Draw(whiteTex, new Rect((int)X, (int)Y, Width, Height), BackgroundColor);
-            //子要素の描画
+
+            // 子要素
             container.Draw(sb);
         }
+
+
     }
 }

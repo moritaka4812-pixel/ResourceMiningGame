@@ -22,7 +22,7 @@ namespace Craftory.Screens
         public LevelSelectScreen(Game1 game) : base(game)
         {
             var ui = new UIFactory(game); //UI生成インスタンス
-            listUI = new ScrollList(20) { 
+            listUI = new ScrollList(PositionMode.Local, spacing: 20) { 
                 RelativeX = 0.1f, RelativeY = 0.05f, RelativeWidth = 0.9f, RelativeHeight = 0.95f}; //スクロール表示のUIインスタンス
 
             bar = new ScrollBar(50, 50, 20, 800) { RelativeX = 0.02f, RelativeY = 0.05f, RelativeWidth = 0.03f, RelativeHeight = 0.95f}; //スクロールバーUIを初期化
@@ -33,18 +33,19 @@ namespace Craftory.Screens
             {
 
                 var btn = ui.CreateTextButton($"stage {i+1}", 0 , 0, 400, 50);
-                listUI.Add(btn, () =>
-                {
-                    game.ChangeScreen(new GamePlayScreen(game));
-                });
-                
+                btn.LeftClicked += () => game.ChangeScreen(new GamePlayScreen(game));
+                listUI.Add(btn);
             }
 
         }
 
         public override void Update(GameTime gameTime)
         {
+            listUI.RecalculateLayout();
+            bar.RecalculateLayout();
+
             listUI.Update(game.Input.Mouse);
+            bar.Update(game.Input.Mouse);
         }
         public override void Draw(SpriteBatch sb)
         {

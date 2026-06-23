@@ -212,9 +212,29 @@ namespace Craftory.UI.Core
             return Update(mouse);
         }
 
+        public Point GetAbsolutePosition()
+        {
+            int ax = rect.X;
+            int ay = rect.Y;
+
+            UIElement? p = Parent;
+            while (p != null)
+            {
+                ax += p.Rect.X;
+                ay += p.Rect.Y;
+                p = p.Parent;
+            }
+
+            return new Point(ax, ay);
+        }
+
+
         public bool HitTest(Point p)
         {
-            return Rect.Contains(p);
+            var abs = GetAbsolutePosition();
+            var absRect = new Rect(abs.X, abs.Y, rect.Width, rect.Height);
+            return absRect.Contains(p);
         }
+
     }
 }

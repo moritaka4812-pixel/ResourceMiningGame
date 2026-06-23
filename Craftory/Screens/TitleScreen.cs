@@ -26,7 +26,7 @@ namespace Craftory.Screens
         {
             spriteBatch.Begin(); // spriteBatchで描画
             startButton.Draw(spriteBatch); // スタートボタンを描画
-            titleLabel.Draw(spriteBatch); //タイトルラベルを描画
+            titleLabel.DrawCenter(spriteBatch); //タイトルラベルを描画
             spriteBatch.End(); // Batchの設定を送信して終了
         }
 

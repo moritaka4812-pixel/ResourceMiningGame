@@ -13,5 +13,10 @@
         {
             return content.Load<Texture2D>(path);
         }
+
+        public static SpriteFont LoadFont(string path)
+        {
+            return content.Load<SpriteFont>(path);
+        }
     }
 }

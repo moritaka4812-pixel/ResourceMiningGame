@@ -31,13 +31,9 @@ namespace Craftory.GameUI
             panel.OnLeftClickHandler = (mouse) => { return true; };
 
             handleButton = ui.CreateTextButton("T", 0, 0, 40, 40);
-            panel.AddChild(handleButton);
-            handleButton.RelativeX = 1f;
-            handleButton.RelativeY = 0.50f;
             handleButton.OnClicked += Toggle;
 
-            panel.RecalculateLayout();
-            handleButton.RecalculateLayout();
+            
 
             var list = new ScrollMultiList();
             list.RelativeY = 0.15f;
@@ -49,6 +45,9 @@ namespace Craftory.GameUI
             AddBuildButton(ui, list, "Buildings/Test", BuildType.Test, 32);
 
             panel.AddChild(list);
+            
+            panel.RecalculateLayout();
+            handleButton.RecalculateLayout();
 
             isOpen = false;
             openX = 0f;
@@ -82,14 +81,22 @@ namespace Craftory.GameUI
             base.Update(mouse);
 
             panel.RelativeX = MathHelper.Lerp((float)panel.RelativeX, isOpen ? openX : closedX, 0.2f);
+            panel.RecalculateLayout();
 
-            return panel.Update(mouse);
+            var rect = panel.Rect;
+            handleButton.X = rect.X + rect.Width; // パネル右側に絶対座標で配置
+            handleButton.Y = rect.Y + (rect.Height - handleButton.Height) / 2;
+
+            bool consumed = false;
+            consumed |= handleButton.Update(mouse);
+            consumed |= panel.Update(mouse);
+            return consumed;
         }
 
         public override void Draw(SpriteBatch sb)
         {
             panel.Draw(sb);
-
+            handleButton.Draw(sb);
         }
 
         public void ClearActiveButton()

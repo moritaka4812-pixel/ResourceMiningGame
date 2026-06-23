@@ -87,35 +87,36 @@ namespace Craftory.UI.Elements
         public override void Draw(SpriteBatch sb)
         {
             if (!Visible) return;
-            //背景
-            sb.Draw(whiteTex, Rect, FillColor);
-            //ボタンの枠
-            if (IsToggle == false)
-                DrawRectangle(sb, Rect, 3, BorderColor);
-            else
-                DrawRectangle(sb, Rect, 3, Color.Yellow);
 
-            if(IsImageButton && Icon != null)
+            var abs = GetAbsolutePosition();
+            var absRect = new Rect(abs.X, abs.Y, rect.Width, rect.Height);
+
+            sb.Draw(whiteTex, absRect, FillColor);
+
+            if (IsToggle == false)
+                DrawRectangle(sb, absRect, 3, BorderColor);
+            else
+                DrawRectangle(sb, absRect, 3, Color.Yellow);
+
+            if (IsImageButton && Icon != null)
             {
                 var iconPos = new Vector2(
-                    Rect.X + (Rect.Width - Icon.Width) / 2,
-                    Rect.Y + (Rect.Height - Icon.Height) / 2
-                    );
+                    absRect.X + (absRect.Width - Icon.Width) / 2,
+                    absRect.Y + (absRect.Height - Icon.Height) / 2
+                );
                 sb.Draw(Icon, iconPos, Color.White);
             }
             else
             {
-                // ボタンテキストサイズを取得
                 var size = font.MeasureString(Text);
-                // テキストの位置計算
                 var pos = new Vector2(
-                    Rect.X + (Rect.Width - size.X) / 2,
-                    Rect.Y + (Rect.Height - size.Y) / 2
-                    );
-
+                    absRect.X + (absRect.Width - size.X) / 2,
+                    absRect.Y + (absRect.Height - size.Y) / 2
+                );
                 sb.DrawString(font, Text, pos, TextColor);
             }
         }
+
 
         public void SetBackgroundColor(Color color) //背景色変更メソッド
         {
@@ -130,9 +131,13 @@ namespace Craftory.UI.Elements
 
         bool ColorChangeWithHover(Point point)
         {
-            bool hover = Rect.Contains(point);
+            // ★ 絶対座標を取得
+            var abs = GetAbsolutePosition();
+            var absRect = new Rect(abs.X, abs.Y, rect.Width, rect.Height);
 
-            if (hover) //ボタン上にマウスがホバーしているか
+            bool hover = absRect.Contains(point);
+
+            if (hover)
             {
                 FillColor = HoverFillColor;
                 BorderColor = Color.Yellow;
@@ -142,8 +147,10 @@ namespace Craftory.UI.Elements
                 FillColor = NormalFillColor;
                 BorderColor = Color.White;
             }
+
             return hover;
         }
+
 
         protected void DrawRectangle(SpriteBatch sb, Rect rect, int thickness, Color color)
         {

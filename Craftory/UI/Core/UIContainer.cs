@@ -55,5 +55,18 @@ namespace Craftory.UI.Core
                 child.Draw(sb);
             }
         }
+
+        public override void RecalculateLayout()
+        {
+            base.RecalculateLayout();
+
+            RecalculateChildrenLayout();
+        }
+
+        protected virtual void RecalculateChildrenLayout()
+        {
+            foreach (var child in Children)
+                child.RecalculateLayout();
+        }
     }
 }
