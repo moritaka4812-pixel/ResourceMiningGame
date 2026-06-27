@@ -15,6 +15,7 @@ namespace Craftory.Item
                         TexturePath = "Items/Ore/CopperOre"
                     }
                 },
+                /*
                 {
                     ItemType.CopperIngot,
                     new ItemData
@@ -23,8 +24,16 @@ namespace Craftory.Item
                         Category = ItemCategory.Ingot,
                         TexturePath = "Items/Ingot/CopperIngot"
                     }
-                }
+                }*/
             };
-            
+
+        public static void LoadTextures()
+        {
+            foreach (var kv in Data)
+            {
+                var data = kv.Value;
+                data.Texture = ContentLoader.LoadTexture(data.TexturePath);
+            }
+        }
     }
 }

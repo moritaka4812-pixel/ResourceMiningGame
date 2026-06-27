@@ -42,6 +42,7 @@ namespace Craftory.GameUI
             list.BackgroundColor = new Color(30, 30, 30, 200);
 
             AddBuildButton(ui, list, "Buildings/Miner/Drill", BuildType.Drill, 32);
+            AddBuildButton(ui, list, "Buildings/Conveyor/ConveyorStraight", BuildType.Conveyor, 32);
 
             panel.AddChild(list);
             

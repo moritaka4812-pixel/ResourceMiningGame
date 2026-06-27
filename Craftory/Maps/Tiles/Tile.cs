@@ -2,6 +2,7 @@
 using Color = Microsoft.Xna.Framework.Color;
 using Craftory.Maps.Shadow;
 using Craftory.Maps.Resource;
+using Craftory.Core;
 
 namespace Craftory.Maps.Tiles
 {
@@ -59,13 +60,16 @@ namespace Craftory.Maps.Tiles
 
         public void Draw(SpriteBatch sb)
         {
+            int tileY = (int)(Position.Y / 32);
             TerrainAnim?.Draw(sb, Position);
             ResourceAnim?.Draw(sb, Position);
 
             if (!IsBuildable)
             {
                 sb.Draw(BlockedTex, Position, Color.White);
-                sb.Draw(blackTex, new Rectangle((int)Position.X, (int)Position.Y + 28, 32, 4), Color.Black * 0.4f);
+                sb.Draw(blackTex,
+                    new Rectangle((int)Position.X, (int)Position.Y + 28, 32, 4),
+                    Color.Black * 0.4f);
             }
         }
 

@@ -81,7 +81,7 @@ namespace Craftory.Screens
             {
                 uiConsumed |= buildModeController.confirmPanel.UpdateWorld(game.Input.Mouse);
                 if (!uiConsumed)
-                    buildModeController.Update(game.Input.Mouse, camera);
+                    buildModeController.Update(game.Input.Mouse);
 
             }
 
@@ -100,20 +100,37 @@ namespace Craftory.Screens
 
         public override void Draw(SpriteBatch sb)
         {
+
+            // 影更新
+            GameCore.Instance.MapManager.shadowGenerator.UpdateShadowTexture(sb);
+
+
+
             //ワールド座標での描画
-            sb.Begin(transformMatrix: camera.GetViewMatrix()); //描画座標を指定してDrawをワールド座標基準で描画できるようにする
+            sb.Begin(
+            SpriteSortMode.Deferred,      // ← ソートしない（安定）
+            BlendState.AlphaBlend,
+            SamplerState.PointClamp,
+            DepthStencilState.None,
+            RasterizerState.CullNone,
+            null,
+            camera.GetViewMatrix()        // ← ワールド座標で描画
+            );
 
             var range = GameCore.Instance.MapManager.Map.GetVisibleRange(camera, game.GraphicsDevice); //描画範囲内のレンジを取得
             GameCore.Instance.MapManager.Draw(sb, camera); //範囲内のマップをDraw
-
-            // 選択タイルのハイライト
-            tileSelectionRenderer.Draw(sb, tileSelectionSystem.SelectedTile);
 
             if (buildModeController.IsActive)
             {
                 buildModeController.Draw(sb);
             }
 
+            sb.End();
+
+            // 選択枠（ズームなし）
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+            // 選択タイルのハイライト
+            tileSelectionRenderer.DrawScreenSpace(sb, tileSelectionSystem.SelectedTile, camera);
             sb.End();
 
             //UIの描画（スクリーン座標）

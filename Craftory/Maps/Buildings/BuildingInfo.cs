@@ -5,7 +5,8 @@ namespace Craftory.Maps.Buildings
 {
     public class BuildingInfo
     {
-        public string TexturePath;
+        public Dictionary<BuildingDirection, string> TexturePaths;
+        public Dictionary<BuildingDirection, Texture2D> CachedTextures = new();
         public int FrameCount;
         public float FrameTime;
         public Point SizeInTiles;
@@ -15,11 +16,16 @@ namespace Craftory.Maps.Buildings
         public int Width;  //タイル準拠の幅
         public int Height; //タイル準拠の高さ
 
-        public Func<Point, BuildingInstance> Create;
+        public Func<Point, BuildingDirection, BuildingInstance> Create;
 
-        public TileAnimation CreateTileAnimation()
+        public TileAnimation CreateTileAnimation(BuildingDirection dir)
         {
-            var tex = ContentLoader.LoadTexture(TexturePath);
+            Texture2D tex;
+            if (CachedTextures.TryGetValue(dir, out var t))
+                tex = t;
+            else
+                tex = CachedTextures[BuildingDirection.None];
+
             return new TileAnimation(tex, FrameCount, tex.Width / FrameCount, tex.Height, FrameTime);
         }
 

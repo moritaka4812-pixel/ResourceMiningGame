@@ -43,7 +43,7 @@ namespace Craftory.Maps.Tiles
                 FrameWidth,
                 FrameHeight
                 );
-            sb.Draw(Texture, pos, src, Color.White);
+            sb.Draw(Texture, pos, src, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
         }
 
         public void Draw(SpriteBatch sb, Vector2 pos, Color color) //プレビュー用表示
@@ -55,7 +55,16 @@ namespace Craftory.Maps.Tiles
                 FrameHeight
                 );
 
-            sb.Draw(Texture, pos, src, color);
+            sb.Draw(Texture, pos, src, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+        }
+
+        public Rect GetCurrentFrameRect()
+        {
+            return new Rect(
+                currentFrame * FrameWidth,
+                0,
+                FrameWidth,
+                FrameHeight);
         }
     }
 }

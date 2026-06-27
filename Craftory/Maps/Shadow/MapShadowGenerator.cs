@@ -1,5 +1,6 @@
 ﻿using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using Craftory.Core;
 
 namespace Craftory.Maps.Shadow
 {
@@ -21,10 +22,13 @@ namespace Craftory.Maps.Shadow
 
         public void Draw(SpriteBatch sb)
         {
+            sb.Draw(shadowTexture, Vector2.Zero, Color.White);
+        }
+
+        public void UpdateShadowTexture(SpriteBatch sb)
+        {
             if (needUpdate)
                 RebuildShadowTexture(sb);
-
-            sb.Draw(shadowTexture, Vector2.Zero, Color.White);
         }
 
         public void RebuildShadowTexture(SpriteBatch sb)
@@ -32,7 +36,6 @@ namespace Craftory.Maps.Shadow
             int w = map.MapSizeX * 32;
             int h = map.MapSizeY * 32;
 
-            // RenderTarget が未作成なら作る
             if (shadowTexture == null ||
                 shadowTexture.Width != w ||
                 shadowTexture.Height != h)
@@ -47,36 +50,23 @@ namespace Craftory.Maps.Shadow
                 );
             }
 
-            sb.End();
 
-            // ① RenderTarget に切り替え
             sb.GraphicsDevice.SetRenderTarget(shadowTexture);
-
-            // ② 透明でクリア（影だけ描きたいので）
             sb.GraphicsDevice.Clear(Color.Transparent);
 
-            // ③ 影描画開始
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            int tilesX = map.MapSizeX;
-            int tilesY = map.MapSizeY;
-
-            for (int x = 0; x < tilesX; x++)
-            {
-                for (int y = 0; y < tilesY; y++)
-                {
+            for (int x = 0; x < map.MapSizeX; x++)
+                for (int y = 0; y < map.MapSizeY; y++)
                     DrawTileShadow(sb, x, y);
-                }
-            }
 
             sb.End();
 
-            sb.Begin();
-            // ④ RenderTarget を通常に戻す
             sb.GraphicsDevice.SetRenderTarget(null);
 
             needUpdate = false;
         }
+
 
 
         private void DrawTileShadow(SpriteBatch sb, int x, int y)

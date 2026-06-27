@@ -1,6 +1,7 @@
 ﻿
 using Craftory.Core;
 using Craftory.Maps.Buildings;
+using Craftory.Maps.Buildings.Conveyors;
 using Craftory.Maps.Shadow;
 using Craftory.Maps.Tiles;
 using Point = Microsoft.Xna.Framework.Point;
@@ -23,9 +24,9 @@ namespace Craftory.Maps
 
         }
 
-        public void AddBuilding(BuildType type, Point tilePos)
+        public void AddBuilding(BuildType type, Point tilePos, BuildingDirection dir)
         {
-            var building = BuildingRegistry.Data[type].Create(tilePos);
+            var building = BuildingRegistry.Data[type].Create(tilePos, dir);
             
             foreach(var pos in building.OccupiedTiles)
             {
@@ -39,6 +40,7 @@ namespace Craftory.Maps
             }
 
             Buildings.Add(building);
+            NotifyNeighborsOfChange(tilePos);
         }
 
         public void Update(GameTime gameTime, Camera camera, GraphicsDevice device)
@@ -65,6 +67,42 @@ namespace Craftory.Maps
 
             foreach (var b in Buildings)
                 b.Draw(sb, camera);
+        }
+
+        private void NotifyNeighborsOfChange(Point pos)
+        {
+            var dirs = new (int x, int y)[]
+            {
+                (1,0), (-1,0), (0,1), (0,-1)
+            };
+
+            foreach(var d in dirs)
+            {
+                var npos = new Point(pos.X + d.x, pos.Y + d.y);
+                var tile = Map.GetTile(npos.X, npos.Y);
+
+                if(tile?.Occupant is Conveyor c)
+                {
+                    bool changed = false;
+
+                    if (c.GetNextPosition() == pos)
+                    {
+                        c.RefreshNextTile();
+                        changed = true;
+                       
+                    }
+                    if (c.GetBackPosition() == pos)
+                    {
+                        c.RefreshNextTile();
+                        changed = true;
+                    }
+
+                    if (changed)
+                    {
+                        c.TileLogic.InitializeTileStart();
+                    }
+                }
+            }
         }
     }
 }

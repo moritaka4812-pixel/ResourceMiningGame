@@ -1,6 +1,7 @@
 ﻿using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Craftory.Maps.Tiles;
+using Craftory.Core;
 
 namespace Craftory.Renderer
 {
@@ -14,17 +15,37 @@ namespace Craftory.Renderer
             pixel.SetData(new[] { Color.White });
         }
 
-        public void Draw(SpriteBatch sb, Tile selectedTile)
+        public void DrawScreenSpace(SpriteBatch sb, Tile tile, Camera camera)
         {
-            if (selectedTile == null) return;
+            if (tile == null) return;
 
-            var pos = selectedTile.Position;
-            int size = 32;
+            // ワールド → スクリーン座標
+            Vector2 screenPos = Vector2.Transform(tile.Position, camera.GetViewMatrix());
 
-            sb.Draw(pixel, new Rectangle((int)pos.X, (int)pos.Y, size, 1), Color.Yellow);
-            sb.Draw(pixel, new Rectangle((int)pos.X, (int)pos.Y + size - 1, size, 1), Color.Yellow);
-            sb.Draw(pixel, new Rectangle((int)pos.X, (int)pos.Y, 1, size), Color.Yellow);
-            sb.Draw(pixel, new Rectangle((int)pos.X + size - 1, (int)pos.Y, 1, size), Color.Yellow);
+            float zoom = camera.Zoom;
+            int size = (int)(32 * zoom);   // ズームに合わせてタイルの大きさを補正
+            int thickness = 1;             // 線の太さは固定（ズームの影響を受けない）
+
+            // 上
+            sb.Draw(pixel, new Rectangle(
+                (int)screenPos.X, (int)screenPos.Y,
+                size, thickness), Color.Yellow);
+
+            // 下
+            sb.Draw(pixel, new Rectangle(
+                (int)screenPos.X, (int)screenPos.Y + size - thickness,
+                size, thickness), Color.Yellow);
+
+            // 左
+            sb.Draw(pixel, new Rectangle(
+                (int)screenPos.X, (int)screenPos.Y,
+                thickness, size), Color.Yellow);
+
+            // 右
+            sb.Draw(pixel, new Rectangle(
+                (int)screenPos.X + size - thickness, (int)screenPos.Y,
+                thickness, size), Color.Yellow);
         }
+
     }
 }

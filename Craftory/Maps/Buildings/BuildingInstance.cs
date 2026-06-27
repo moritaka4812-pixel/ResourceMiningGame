@@ -16,14 +16,14 @@ namespace Craftory.Maps.Buildings
 
         protected float timer = 0f;
 
-        public BuildingInstance(BuildType type, Point tilePosition)
+        public BuildingInstance(BuildType type, Point tilePosition, BuildingDirection dir)
         {
             Type = type;
             TilePosition = tilePosition;
 
             var info = BuildingRegistry.Data[type];
 
-            Anim = info.CreateTileAnimation();
+            Anim = info.CreateTileAnimation(dir);
 
             SizeInTiles = info.SizeInTiles;
             WorkSpeed = info.WorkSpeed;
