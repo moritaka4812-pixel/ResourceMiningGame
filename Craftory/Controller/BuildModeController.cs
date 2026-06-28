@@ -6,7 +6,6 @@ using Craftory.Maps;
 using Craftory.Input;
 using Craftory.Core;
 using Craftory.Maps.Tiles;
-using Craftory.Maps.Buildings;
 using Craftory.Screens;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Intrinsics;
@@ -42,16 +41,19 @@ namespace Craftory.Controller
 
             this.worldui = new WorldUIFactory(game, camera);
 
-            confirmPanel = worldui.CreateWorldPanel(80, 40);
+            confirmPanel = worldui.CreateWorldPanel(120, 40);
 
             var okButton = worldui.CreateWorldTextButton("o", 0, 0, 40, 40);
             var cancelButton = worldui.CreateWorldTextButton("x", 40, 0, 40, 40);
+            var rotateButton = worldui.CreateWorldTextButton("R", 80, 0, 40, 40);
 
             okButton.LeftClicked += () => screen.buildModeController.Confirm();
             cancelButton.LeftClicked += () => screen.buildModeController.Cancel();
+            rotateButton.LeftClicked += RotateDirection;
 
             confirmPanel.AddChild(okButton);
             confirmPanel.AddChild(cancelButton);
+            confirmPanel.AddChild(rotateButton);
         }
 
         public void Start(BuildType type)
@@ -249,6 +251,16 @@ namespace Craftory.Controller
             );
         }
 
-
+        private void RotateDirection()
+        {
+            direction = direction switch
+            {
+                BuildingDirection.Up => BuildingDirection.Right,
+                BuildingDirection.Right => BuildingDirection.Down,
+                BuildingDirection.Down => BuildingDirection.Left,
+                BuildingDirection.Left => BuildingDirection.Up,
+                _ => BuildingDirection.Up
+            };
+        }
     }
 }

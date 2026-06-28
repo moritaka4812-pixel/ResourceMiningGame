@@ -31,8 +31,6 @@ namespace Craftory.Maps.Buildings.Conveyors
         {
             //建物描画
             DrawRotated(sb);
-            //アイテム描画
-            TileLogic.Draw(sb, new Vector2(TilePosition.X * 32, TilePosition.Y * 32), Direction);
         }
 
         private void SetNextTile()

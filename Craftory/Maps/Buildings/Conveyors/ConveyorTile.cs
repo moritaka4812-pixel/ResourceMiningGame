@@ -135,14 +135,15 @@ namespace Craftory.Maps.Buildings.Conveyors
             const float tileSize = 32f;
             const float itemSize = 24f;
             const float centerOffset = (tileSize - itemSize) / 2f; //タイル中央への補正
+            float visualOffset = 0.97f;
 
             // タイル中央を基準にして位置を計算
             return dir switch
             {
-                BuildingDirection.Right => new Vector2(worldPos.X + pos * tileSize + centerOffset, worldPos.Y + centerOffset),
-                BuildingDirection.Left => new Vector2(worldPos.X + (1 - pos) * tileSize - centerOffset, worldPos.Y + centerOffset),
-                BuildingDirection.Up => new Vector2(worldPos.X + centerOffset, worldPos.Y + (1 - pos) * tileSize - centerOffset),
-                BuildingDirection.Down => new Vector2(worldPos.X + centerOffset, worldPos.Y + pos * tileSize + centerOffset),
+                BuildingDirection.Right => new Vector2((worldPos.X + pos * tileSize - (itemSize / 2f)) * visualOffset, worldPos.Y + centerOffset),
+                BuildingDirection.Left => new Vector2((worldPos.X + (1 - pos) * tileSize - (itemSize / 2f)) * (1 / visualOffset), worldPos.Y + centerOffset),
+                BuildingDirection.Up => new Vector2(worldPos.X + centerOffset, (worldPos.Y + (1 - pos) * tileSize - (itemSize / 2f)) * (1 / visualOffset)),
+                BuildingDirection.Down => new Vector2(worldPos.X + centerOffset, (worldPos.Y + pos * tileSize - (itemSize / 2f)) * visualOffset),
                 _ => worldPos + new Vector2(centerOffset, centerOffset)
             };
 

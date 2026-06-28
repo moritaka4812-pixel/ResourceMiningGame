@@ -62,11 +62,24 @@ namespace Craftory.Maps
         public void Draw(SpriteBatch sb, Camera camera)
         {
             var range = Map.GetVisibleRange(camera, sb.GraphicsDevice);
+            //地形
             Map.Draw(sb, range);
             shadowGenerator.Draw(sb);
 
+            //コンベア
             foreach (var b in Buildings)
-                b.Draw(sb, camera);
+                if (b is Conveyor)
+                    b.Draw(sb, camera);
+
+            //アイテム
+            foreach(var b in Buildings)
+                if(b is Conveyor conveyor)
+                    conveyor.TileLogic.Draw(sb, new Vector2(conveyor.TilePosition.X * 32, conveyor.TilePosition.Y * 32), conveyor.Direction);
+
+            //その他の建物
+            foreach (var b in Buildings)
+                if (b is not Conveyor)
+                    b.Draw(sb, camera);
         }
 
         private void NotifyNeighborsOfChange(Point pos)
